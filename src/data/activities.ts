@@ -1,0 +1,43 @@
+import type { Activity } from "@/types";
+
+export const activities: Activity[] = [
+  {
+    id: "family-story-time",
+    title: "Family Story Time",
+    summary: "Stories, songs, and simple activities for young children.",
+    date: "2026-08-05",
+    startTime: "10:00",
+    endTime: "11:00",
+    venue: "Lakeview Library",
+    neighborhood: "Lakeview",
+    ageGroup: "Toddlers and preschoolers",
+    registrationRequired: false,
+    sourceUrl: "https://example.com/story-time",
+  },
+  {
+    id: "kids-art-workshop",
+    title: "Kids Art Workshop",
+    summary: "A free creative art session for elementary-school children.",
+    date: "2026-08-06",
+    startTime: "15:30",
+    endTime: "16:30",
+    venue: "Roscoe Village Community Center",
+    neighborhood: "Roscoe Village",
+    ageGroup: "Ages 6–10",
+    registrationRequired: true,
+    sourceUrl: "https://example.com/art-workshop",
+  },
+  {
+    id: "family-music-in-the-park",
+    title: "Family Music in the Park",
+    summary: "A free outdoor music performance for the whole family.",
+    date: "2026-08-08",
+    startTime: "17:00",
+    endTime: "18:30",
+    venue: "Lincoln Park",
+    neighborhood: "Lincoln Park",
+    ageGroup: "All ages",
+    registrationRequired: false,
+    sourceUrl: "https://example.com/music-in-the-park",
+  },
+];

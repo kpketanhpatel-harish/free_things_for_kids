@@ -1,0 +1,40 @@
+import type { RestaurantOffer } from "@/types";
+
+export const restaurantOffers: RestaurantOffer[] = [
+  {
+    id: "lakeview-pizza-tuesday",
+    restaurantName: "Lakeview Pizza",
+    neighborhood: "Lakeview",
+    eligibleDays: ["Tuesday"],
+    eligibleHours: "4:00 PM–8:00 PM",
+    offerSummary: "One free kids meal with the purchase of one adult entrée.",
+    adultPurchaseRequired: true,
+    maximumChildAge: 12,
+    dineInOnly: true,
+    confirmed: true,
+  },
+  {
+    id: "roscoe-family-cafe-sunday",
+    restaurantName: "Roscoe Family Café",
+    neighborhood: "Roscoe Village",
+    eligibleDays: ["Sunday"],
+    eligibleHours: "11:00 AM–3:00 PM",
+    offerSummary: "Children receive one free meal from the kids menu.",
+    adultPurchaseRequired: true,
+    maximumChildAge: 10,
+    dineInOnly: true,
+    confirmed: true,
+  },
+  {
+    id: "lincoln-park-grill-weekdays",
+    restaurantName: "Lincoln Park Grill",
+    neighborhood: "Lincoln Park",
+    eligibleDays: ["Monday", "Wednesday"],
+    eligibleHours: "5:00 PM–7:00 PM",
+    offerSummary: "One free kids meal with each qualifying adult meal.",
+    adultPurchaseRequired: true,
+    maximumChildAge: 12,
+    dineInOnly: true,
+    confirmed: false,
+  },
+];
