@@ -11,7 +11,7 @@ export default function ActivitiesPage() {
           </p>
 
           <h1 className="mt-2 text-4xl font-bold text-gray-900">
-            Free Activities
+            Free Activities For Kids
           </h1>
 
           <p className="mt-3 max-w-2xl text-gray-600">
