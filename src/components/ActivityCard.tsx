@@ -1,12 +1,74 @@
 import type { Activity } from "@/types";
+import { formatActivityDate } from "@/lib/formatActivityDate";
 
 type ActivityCardProps = {
   activity: Activity;
+  variant?: "default" | "upcoming";
 };
 
 export default function ActivityCard({
   activity,
+  variant = "default",
 }: ActivityCardProps) {
+  if (variant === "upcoming") {
+    return (
+      <article className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <h2 className="text-lg font-semibold leading-snug">
+          <a
+            href={activity.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 text-gray-900 hover:text-blue-700 hover:underline"
+          >
+            <span className="text-xl" aria-hidden="true">
+              {activity.icon}
+            </span>
+            {activity.title}
+          </a>
+        </h2>
+
+        <p className="mt-1.5 line-clamp-2 text-sm text-gray-600">
+          {activity.summary}
+        </p>
+
+        <dl className="mt-3 space-y-1 text-sm text-gray-700">
+          <div>
+            <dt className="inline font-semibold">Date: </dt>
+            <dd className="inline">{formatActivityDate(activity.date)}</dd>
+          </div>
+
+          <div>
+            <dt className="inline font-semibold">Time: </dt>
+            <dd className="inline">
+              {activity.startTime}
+              {activity.endTime ? `–${activity.endTime}` : ""}
+            </dd>
+          </div>
+
+          <div>
+            <dt className="inline font-semibold">Venue: </dt>
+            <dd className="inline">{activity.venue}</dd>
+          </div>
+
+          <div>
+            <dt className="inline font-semibold">Age group: </dt>
+            <dd className="inline">{activity.ageGroup}</dd>
+          </div>
+        </dl>
+
+        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+          <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-blue-800">
+            {activity.neighborhood}
+          </span>
+
+          <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-green-800">
+            Free
+          </span>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-3 flex flex-wrap gap-2 text-sm">
@@ -28,7 +90,7 @@ export default function ActivityCard({
       <dl className="mt-4 space-y-2 text-sm text-gray-700">
         <div>
           <dt className="inline font-semibold">Date: </dt>
-          <dd className="inline">{activity.date}</dd>
+          <dd className="inline">{formatActivityDate(activity.date)}</dd>
         </div>
 
         <div>

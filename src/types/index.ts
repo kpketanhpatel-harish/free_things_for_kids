@@ -2,6 +2,7 @@ export type Activity = {
   id: string;
   title: string;
   summary: string;
+  icon: string;
   date: string;
   startTime: string;
   endTime?: string;
