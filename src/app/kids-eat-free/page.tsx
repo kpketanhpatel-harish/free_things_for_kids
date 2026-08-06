@@ -1,4 +1,4 @@
-import RestaurantOfferCard from "@/components/RestaurantOfferCard";
+import RestaurantOfferList from "@/components/RestaurantOfferList";
 import { restaurantOffers } from "@/data/restaurantOffers";
 
 export default function KidsEatFreePage() {
@@ -25,11 +25,7 @@ export default function KidsEatFreePage() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {restaurantOffers.map((offer) => (
-            <RestaurantOfferCard key={offer.id} offer={offer} />
-          ))}
-        </div>
+        <RestaurantOfferList offers={restaurantOffers} />
       </section>
     </main>
   );
