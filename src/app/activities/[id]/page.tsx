@@ -25,7 +25,7 @@ export default async function ActivityDetailPage({
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="bg-gray-50">
       <section className="mx-auto max-w-3xl px-4 py-12">
         <Link
           href="/activities"

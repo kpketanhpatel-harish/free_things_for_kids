@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-sky-50">
+    <main className="bg-sky-50">
       <section className="mx-auto flex max-w-md flex-col px-4 py-16">
         <h1 className="text-3xl font-bold text-gray-900">Login</h1>
 

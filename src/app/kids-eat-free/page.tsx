@@ -3,7 +3,7 @@ import { restaurantOffers } from "@/data/restaurantOffers";
 
 export default function KidsEatFreePage() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="bg-gray-50">
       <section className="mx-auto max-w-6xl px-4 py-12">
         <div className="mb-8">
           <p className="font-medium text-orange-700">

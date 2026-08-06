@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,7 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Free Things for Kids Chicago",
+  title: {
+    default: "Free Things for Kids Chicago",
+    template: "%s | Free Things for Kids Chicago",
+  },
   description:
     "Discover free activities and kids-eat-free restaurant offers in Chicago.",
 };
@@ -28,7 +33,13 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-screen flex-col">
+        <Header />
+
+        <div className="flex-1">{children}</div>
+
+        <Footer />
+      </body>
     </html>
   );
 }

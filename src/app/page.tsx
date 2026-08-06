@@ -14,7 +14,7 @@ export default function HomePage() {
   const upcomingOffers = getUpcomingRestaurantOffers(restaurantOffers, 3);
 
   return (
-    <main className="min-h-screen bg-sky-50">
+    <main className="bg-sky-50">
       <section className="mx-auto flex max-w-6xl flex-col px-4 py-10">
         <header className="flex flex-col gap-6">
           <div className="flex items-start justify-between gap-4">
