@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Activity } from "@/types";
 import { formatActivityDate } from "@/lib/formatActivityDate";
 
@@ -65,6 +66,15 @@ export default function ActivityCard({
             Free
           </span>
         </div>
+
+        <div className="mt-4">
+          <Link
+            href={`/activities/${activity.id}`}
+            className="inline-flex rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            View Details
+          </Link>
+        </div>
       </article>
     );
   }
@@ -119,14 +129,23 @@ export default function ActivityCard({
         </div>
       </dl>
 
-      <a
-        href={activity.sourceUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-5 inline-block font-medium text-blue-700 hover:underline"
-      >
-        View original source
-      </a>
+      <div className="mt-5 flex flex-wrap items-center gap-4">
+        <Link
+          href={`/activities/${activity.id}`}
+          className="inline-flex rounded-lg bg-blue-700 px-4 py-2 font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          View Details
+        </Link>
+
+        <a
+          href={activity.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium text-blue-700 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          View original source
+        </a>
+      </div>
     </article>
   );
 }

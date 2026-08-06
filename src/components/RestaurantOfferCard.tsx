@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { RestaurantOffer } from "@/types";
 
 type RestaurantOfferCardProps = {
@@ -57,6 +58,13 @@ export default function RestaurantOfferCard({
             Free
           </span>
         </div>
+
+        <Link
+          href={`/kids-eat-free/${offer.id}`}
+          className="mt-4 inline-flex rounded-lg bg-orange-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+        >
+          View Details
+        </Link>
       </article>
     );
   }
@@ -126,6 +134,13 @@ export default function RestaurantOfferCard({
           before visiting.
         </p>
       )}
+
+      <Link
+        href={`/kids-eat-free/${offer.id}`}
+        className="mt-5 inline-flex rounded-lg bg-orange-700 px-4 py-2 font-medium text-white transition hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+      >
+        View Details
+      </Link>
     </article>
   );
 }
