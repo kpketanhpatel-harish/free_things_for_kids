@@ -1,4 +1,4 @@
-import type { Activity, RestaurantOffer } from "@/types";
+import type { Activity, DayOfWeek, RestaurantOffer } from "@/types";
 
 const DAY_NAMES = [
   "Sunday",
@@ -48,7 +48,7 @@ export function getUpcomingRestaurantOffers(
   limit = 2,
 ): RestaurantOffer[] {
   const { today, tomorrow } = getTodayAndTomorrow();
-  const upcomingDays = new Set([
+  const upcomingDays = new Set<DayOfWeek>([
     DAY_NAMES[today.getDay()],
     DAY_NAMES[tomorrow.getDay()],
   ]);

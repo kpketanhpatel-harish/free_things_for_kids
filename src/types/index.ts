@@ -1,3 +1,12 @@
+export type DayOfWeek =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday";
+
 export type Activity = {
   id: string;
   title: string;
@@ -17,7 +26,7 @@ export type RestaurantOffer = {
   id: string;
   restaurantName: string;
   neighborhood: string;
-  eligibleDays: string[];
+  eligibleDays: DayOfWeek[];
   eligibleHours: string;
   offerSummary: string;
   adultPurchaseRequired: boolean;
