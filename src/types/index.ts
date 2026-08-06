@@ -16,6 +16,7 @@ export type Activity = {
   startTime: string;
   endTime?: string;
   venue: string;
+  address: string;
   neighborhood: string;
   ageGroup: string;
   registrationRequired: boolean;

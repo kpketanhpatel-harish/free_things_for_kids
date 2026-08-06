@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AddToCalendarButton from "@/components/AddToCalendarButton";
 import type { Activity } from "@/types";
 import { formatActivityDate } from "@/lib/formatActivityDate";
 
@@ -6,6 +7,55 @@ type ActivityCardProps = {
   activity: Activity;
   variant?: "default" | "upcoming";
 };
+
+function ActivityDetails({
+  activity,
+  showRegistration = false,
+}: {
+  activity: Activity;
+  showRegistration?: boolean;
+}) {
+  return (
+    <dl className="space-y-1 text-sm text-gray-700">
+      <div>
+        <dt className="inline font-semibold">Date: </dt>
+        <dd className="inline">{formatActivityDate(activity.date)}</dd>
+      </div>
+
+      <div>
+        <dt className="inline font-semibold">Time: </dt>
+        <dd className="inline">
+          {activity.startTime}
+          {activity.endTime ? `–${activity.endTime}` : ""}
+        </dd>
+      </div>
+
+      <div>
+        <dt className="inline font-semibold">Venue: </dt>
+        <dd className="inline">{activity.venue}</dd>
+      </div>
+
+      <div>
+        <dt className="inline font-semibold">Address: </dt>
+        <dd className="inline">{activity.address}</dd>
+      </div>
+
+      <div>
+        <dt className="inline font-semibold">Age group: </dt>
+        <dd className="inline">{activity.ageGroup}</dd>
+      </div>
+
+      {showRegistration && (
+        <div>
+          <dt className="inline font-semibold">Registration: </dt>
+          <dd className="inline">
+            {activity.registrationRequired ? "Required" : "Not required"}
+          </dd>
+        </div>
+      )}
+    </dl>
+  );
+}
 
 export default function ActivityCard({
   activity,
@@ -32,30 +82,9 @@ export default function ActivityCard({
           {activity.summary}
         </p>
 
-        <dl className="mt-3 space-y-1 text-sm text-gray-700">
-          <div>
-            <dt className="inline font-semibold">Date: </dt>
-            <dd className="inline">{formatActivityDate(activity.date)}</dd>
-          </div>
-
-          <div>
-            <dt className="inline font-semibold">Time: </dt>
-            <dd className="inline">
-              {activity.startTime}
-              {activity.endTime ? `–${activity.endTime}` : ""}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="inline font-semibold">Venue: </dt>
-            <dd className="inline">{activity.venue}</dd>
-          </div>
-
-          <div>
-            <dt className="inline font-semibold">Age group: </dt>
-            <dd className="inline">{activity.ageGroup}</dd>
-          </div>
-        </dl>
+        <div className="mt-3">
+          <ActivityDetails activity={activity} />
+        </div>
 
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
           <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-blue-800">
@@ -67,13 +96,15 @@ export default function ActivityCard({
           </span>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <Link
             href={`/activities/${activity.id}`}
             className="inline-flex rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             View Details
           </Link>
+
+          <AddToCalendarButton activity={activity} size="sm" />
         </div>
       </article>
     );
@@ -97,37 +128,9 @@ export default function ActivityCard({
 
       <p className="mt-2 text-gray-600">{activity.summary}</p>
 
-      <dl className="mt-4 space-y-2 text-sm text-gray-700">
-        <div>
-          <dt className="inline font-semibold">Date: </dt>
-          <dd className="inline">{formatActivityDate(activity.date)}</dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Time: </dt>
-          <dd className="inline">
-            {activity.startTime}
-            {activity.endTime ? `–${activity.endTime}` : ""}
-          </dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Venue: </dt>
-          <dd className="inline">{activity.venue}</dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Age group: </dt>
-          <dd className="inline">{activity.ageGroup}</dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Registration: </dt>
-          <dd className="inline">
-            {activity.registrationRequired ? "Required" : "Not required"}
-          </dd>
-        </div>
-      </dl>
+      <div className="mt-4 space-y-2">
+        <ActivityDetails activity={activity} showRegistration />
+      </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <Link
@@ -136,6 +139,8 @@ export default function ActivityCard({
         >
           View Details
         </Link>
+
+        <AddToCalendarButton activity={activity} />
 
         <a
           href={activity.sourceUrl}
