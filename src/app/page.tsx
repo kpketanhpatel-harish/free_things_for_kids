@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import ActivityCard from "@/components/ActivityCard";
 import RestaurantOfferCard from "@/components/RestaurantOfferCard";
@@ -15,25 +16,45 @@ export default function HomePage() {
 
   return (
     <main className="bg-sky-50">
-      <section className="mx-auto flex max-w-6xl flex-col px-4 py-10">
-        <header className="flex flex-col gap-6">
-          <div className="flex items-start justify-between gap-4">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 md:text-5xl">
-              Free Kids Things - Chicago Edition
-            </h1>
+      <section className="relative min-h-[22rem] overflow-hidden md:min-h-[28rem]">
+        <Image
+          src="/images/chicago-skyline-hero.png"
+          alt="Chicago skyline at dusk over Lake Michigan"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
 
-            <Link
-              href="/login"
-              className="shrink-0 rounded-xl border border-gray-300 bg-white px-4 py-2 font-medium text-gray-900 shadow-sm transition hover:bg-gray-50"
-            >
-              Login
-            </Link>
-          </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-slate-900/85 via-slate-900/65 to-slate-900/35"
+        />
 
-          <SearchBar />
-        </header>
+        <div className="relative mx-auto flex max-w-6xl flex-col justify-end px-4 py-12 md:min-h-[28rem] md:py-16">
+          <header className="flex flex-col gap-6">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-wide text-sky-200">
+                Chicago family guide
+              </p>
 
-        <section className="mt-12">
+              <h1 className="mt-2 max-w-2xl text-3xl font-bold tracking-tight text-white md:text-5xl">
+                Free Kids Things — Chicago Edition
+              </h1>
+
+              <p className="mt-3 max-w-xl text-base text-slate-200 md:text-lg">
+                Discover free activities and kids-eat-free offers in
+                Lakeview, Roscoe Village, and Lincoln Park.
+              </p>
+            </div>
+
+            <SearchBar />
+          </header>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-10">
+        <div>
           <div className="mb-6 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold text-gray-900">
               Upcoming Activities
@@ -62,9 +83,9 @@ export default function HomePage() {
               No activities scheduled for today or tomorrow.
             </p>
           )}
-        </section>
+        </div>
 
-        <section className="mt-12">
+        <div className="mt-12">
           <div className="mb-6 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold text-gray-900">
               Kids Eat Free Today &amp; Tomorrow
@@ -93,7 +114,7 @@ export default function HomePage() {
               No kids-eat-free offers for today or tomorrow.
             </p>
           )}
-        </section>
+        </div>
       </section>
     </main>
   );

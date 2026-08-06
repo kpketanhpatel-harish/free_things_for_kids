@@ -80,6 +80,20 @@ export default function Header() {
                 </li>
               );
             })}
+
+            <li>
+              <Link
+                href="/login"
+                aria-current={pathname === "/login" ? "page" : undefined}
+                className={
+                  pathname === "/login"
+                    ? "inline-flex rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    : "inline-flex rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                }
+              >
+                Login
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
