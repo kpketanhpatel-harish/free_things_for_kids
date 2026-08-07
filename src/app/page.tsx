@@ -10,6 +10,7 @@ import {
   getUpcomingRestaurantOffers,
 } from "@/lib/upcoming";
 
+// Redeploy trigger: ensure Vercel picks up Supabase env vars.
 export default async function HomePage() {
   const [activities, restaurantOffers] = await Promise.all([
     getActivities(),
