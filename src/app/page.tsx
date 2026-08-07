@@ -3,14 +3,15 @@ import Link from "next/link";
 import ActivityCard from "@/components/ActivityCard";
 import RestaurantOfferCard from "@/components/RestaurantOfferCard";
 import SearchBar from "@/components/SearchBar";
-import { activities } from "@/data/activities";
+import { getActivities } from "@/lib/activities";
 import { restaurantOffers } from "@/data/restaurantOffers";
 import {
   getUpcomingActivities,
   getUpcomingRestaurantOffers,
 } from "@/lib/upcoming";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const activities = await getActivities();
   const upcomingActivities = getUpcomingActivities(activities, 3);
   const upcomingOffers = getUpcomingRestaurantOffers(restaurantOffers, 3);
 

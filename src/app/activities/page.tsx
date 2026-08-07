@@ -1,7 +1,9 @@
 import ActivityList from "@/components/ActivityList";
-import { activities } from "@/data/activities";
+import { getActivities } from "@/lib/activities";
 
-export default function ActivitiesPage() {
+export default async function ActivitiesPage() {
+  const activities = await getActivities();
+
   return (
     <main className="bg-gray-50">
       <section className="mx-auto max-w-6xl px-4 py-12">

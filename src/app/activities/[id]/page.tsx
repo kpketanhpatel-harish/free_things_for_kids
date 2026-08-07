@@ -1,24 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { activities } from "@/data/activities";
+import { getActivityById } from "@/lib/activities";
 import { formatActivityDate } from "@/lib/formatActivityDate";
 
 type ActivityDetailPageProps = {
   params: Promise<{ id: string }>;
 };
 
-export function generateStaticParams() {
-  return activities.map((activity) => ({
-    id: activity.id,
-  }));
-}
-
 export default async function ActivityDetailPage({
   params,
 }: ActivityDetailPageProps) {
   const { id } = await params;
-
-  const activity = activities.find((item) => item.id === id);
+  const activity = await getActivityById(id);
 
   if (!activity) {
     notFound();
