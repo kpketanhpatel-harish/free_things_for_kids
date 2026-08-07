@@ -25,8 +25,9 @@ function ActivityDetails({
       <div>
         <dt className="inline font-semibold">Time: </dt>
         <dd className="inline">
-          {activity.startTime}
-          {activity.endTime ? `–${activity.endTime}` : ""}
+          {activity.startTime
+            ? `${activity.startTime}${activity.endTime ? `–${activity.endTime}` : ""}`
+            : "Time TBA"}
         </dd>
       </div>
 
@@ -35,10 +36,12 @@ function ActivityDetails({
         <dd className="inline">{activity.venue}</dd>
       </div>
 
-      <div>
-        <dt className="inline font-semibold">Address: </dt>
-        <dd className="inline">{activity.address}</dd>
-      </div>
+      {activity.address ? (
+        <div>
+          <dt className="inline font-semibold">Address: </dt>
+          <dd className="inline">{activity.address}</dd>
+        </div>
+      ) : null}
 
       <div>
         <dt className="inline font-semibold">Age group: </dt>

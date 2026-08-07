@@ -13,10 +13,10 @@ export type Activity = {
   summary: string;
   icon: string;
   date: string;
-  startTime: string;
+  startTime?: string;
   endTime?: string;
   venue: string;
-  address: string;
+  address?: string;
   neighborhood: string;
   ageGroup: string;
   registrationRequired: boolean;

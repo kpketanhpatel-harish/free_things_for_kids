@@ -2,6 +2,7 @@
 
 import type { Activity } from "@/types";
 import {
+  canGenerateActivityIcs,
   generateActivityIcs,
   getActivityIcsFilename,
 } from "@/lib/generateActivityIcs";
@@ -15,6 +16,10 @@ export default function AddToCalendarButton({
   activity,
   size = "md",
 }: AddToCalendarButtonProps) {
+  if (!canGenerateActivityIcs(activity)) {
+    return null;
+  }
+
   function handleDownload() {
     const icsContent = generateActivityIcs(activity);
     const blob = new Blob([icsContent], {

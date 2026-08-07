@@ -60,8 +60,9 @@ export default async function ActivityDetailPage({
             <div>
               <dt className="font-semibold">Time</dt>
               <dd>
-                {activity.startTime}
-                {activity.endTime ? `–${activity.endTime}` : ""}
+                {activity.startTime
+                  ? `${activity.startTime}${activity.endTime ? `–${activity.endTime}` : ""}`
+                  : "Time TBA"}
               </dd>
             </div>
 

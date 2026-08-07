@@ -4,15 +4,15 @@ import type { Activity } from "@/types";
 type ActivityRow = {
   id: string;
   title: string;
-  summary: string;
-  icon: string;
+  summary: string | null;
+  icon: string | null;
   date: string;
-  start_time: string;
+  start_time: string | null;
   end_time: string | null;
-  venue: string;
-  address: string;
-  neighborhood: string;
-  age_group: string;
+  venue: string | null;
+  address: string | null;
+  neighborhood: string | null;
+  age_group: string | null;
   registration_required: boolean;
   source_url: string;
 };
@@ -21,15 +21,15 @@ function mapActivity(row: ActivityRow): Activity {
   return {
     id: row.id,
     title: row.title,
-    summary: row.summary,
-    icon: row.icon,
+    summary: row.summary ?? "See the event page for full details.",
+    icon: row.icon ?? "✨",
     date: row.date,
-    startTime: row.start_time,
+    startTime: row.start_time ?? undefined,
     endTime: row.end_time ?? undefined,
-    venue: row.venue,
-    address: row.address,
-    neighborhood: row.neighborhood,
-    ageGroup: row.age_group,
+    venue: row.venue ?? "See event page",
+    address: row.address ?? undefined,
+    neighborhood: row.neighborhood ?? "Chicago",
+    ageGroup: row.age_group ?? "All ages",
     registrationRequired: row.registration_required,
     sourceUrl: row.source_url,
   };

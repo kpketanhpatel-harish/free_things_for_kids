@@ -28,9 +28,17 @@ function formatIcsUtcStamp(date: Date): string {
   return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
+export function canGenerateActivityIcs(activity: Activity): boolean {
+  return Boolean(activity.startTime && /^\d{2}:\d{2}$/.test(activity.startTime));
+}
+
 export function generateActivityIcs(activity: Activity): string {
+  if (!activity.startTime || !canGenerateActivityIcs(activity)) {
+    throw new Error("Activity is missing a parseable start time");
+  }
+
   const endTime = activity.endTime ?? addOneHour(activity.startTime);
-  const location = `${activity.venue}, ${activity.address}`;
+  const location = [activity.venue, activity.address].filter(Boolean).join(", ");
   const description = [
     activity.summary,
     `Age group: ${activity.ageGroup}`,
