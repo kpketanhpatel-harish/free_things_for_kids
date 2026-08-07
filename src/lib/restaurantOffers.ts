@@ -4,33 +4,39 @@ import type { DayOfWeek, RestaurantOffer } from "@/types";
 type RestaurantOfferRow = {
   id: string;
   restaurant_name: string;
-  neighborhood: string;
-  eligible_days: string[];
-  eligible_hours: string;
-  offer_summary: string;
+  neighborhood: string | null;
+  eligible_days: string[] | null;
+  eligible_hours: string | null;
+  offer_summary: string | null;
   adult_purchase_required: boolean;
   maximum_child_age: number | null;
   dine_in_only: boolean;
   confirmed: boolean;
+  address: string | null;
+  website: string | null;
+  source_url: string | null;
 };
 
 function mapRestaurantOffer(row: RestaurantOfferRow): RestaurantOffer {
   return {
     id: row.id,
     restaurantName: row.restaurant_name,
-    neighborhood: row.neighborhood,
-    eligibleDays: row.eligible_days as DayOfWeek[],
-    eligibleHours: row.eligible_hours,
-    offerSummary: row.offer_summary,
+    neighborhood: row.neighborhood ?? "Chicago",
+    eligibleDays: (row.eligible_days ?? []) as DayOfWeek[],
+    eligibleHours: row.eligible_hours ?? "See offer details",
+    offerSummary: row.offer_summary ?? "Kids eat free — see source for details.",
     adultPurchaseRequired: row.adult_purchase_required,
     maximumChildAge: row.maximum_child_age ?? undefined,
     dineInOnly: row.dine_in_only,
     confirmed: row.confirmed,
+    address: row.address ?? undefined,
+    website: row.website ?? undefined,
+    sourceUrl: row.source_url ?? undefined,
   };
 }
 
 const restaurantOfferSelect =
-  "id, restaurant_name, neighborhood, eligible_days, eligible_hours, offer_summary, adult_purchase_required, maximum_child_age, dine_in_only, confirmed";
+  "id, restaurant_name, neighborhood, eligible_days, eligible_hours, offer_summary, adult_purchase_required, maximum_child_age, dine_in_only, confirmed, address, website, source_url";
 
 export async function getRestaurantOffers(): Promise<RestaurantOffer[]> {
   const supabase = await createClient();

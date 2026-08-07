@@ -38,3 +38,24 @@ Promotion rules:
 - Rows with enough data become `activities` records
 - Lakeview / Roscoe Village / Lincoln Park → `status = published` (visible in the app)
 - Other neighborhoods → `status = draft` (hidden by RLS)
+
+## Kids eat free / restaurant offers import
+
+Run in order in the SQL Editor:
+
+1. `staging_restaurant_offers.sql`
+2. `restaurant_offers_schema_updates.sql`
+
+Then:
+
+```bash
+npm run import:restaurant-offers -- --dry-run --promote
+npm run import:restaurant-offers -- --promote
+```
+
+Promotion rules:
+
+- All raw rows land in `staging_restaurant_offers`
+- Normalized offers with target neighborhood + parseable days → `published`
+- Everything else usable → `draft`
+- `confirmed` defaults to `false` (aggregator sources)

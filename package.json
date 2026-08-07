@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "import:activities": "node scripts/import-activities-sheet.mjs"
+    "import:activities": "node scripts/import-activities-sheet.mjs",
+    "import:restaurant-offers": "node scripts/import-restaurant-offers-sheet.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

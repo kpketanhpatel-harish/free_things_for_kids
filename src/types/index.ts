@@ -34,4 +34,7 @@ export type RestaurantOffer = {
   maximumChildAge?: number;
   dineInOnly: boolean;
   confirmed: boolean;
+  address?: string;
+  website?: string;
+  sourceUrl?: string;
 };

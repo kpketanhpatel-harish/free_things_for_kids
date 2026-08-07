@@ -47,8 +47,8 @@ export function rowHash(eventLink, dateRaw, eventName) {
     .slice(0, 32);
 }
 
-export function activityIdFromLink(eventLink, dateRaw) {
-  const basis = `${eventLink ?? ""}|${dateRaw ?? ""}`;
+export function activityIdFromLink(eventLink, dateRaw, eventName = "") {
+  const basis = `${eventLink ?? ""}|${dateRaw ?? ""}|${eventName ?? ""}`;
   return createHash("sha256").update(basis).digest("hex").slice(0, 16);
 }
 
@@ -207,7 +207,7 @@ export function normalizeSheetRow(row) {
     },
     activity: eventName && eventLink && dateRaw
       ? {
-          id: activityIdFromLink(eventLink, dateRaw),
+          id: activityIdFromLink(eventLink, dateRaw, eventName),
           title: eventName,
           summary: buildSummary(notes, ageRange),
           icon: pickIcon(eventName, ageRange),

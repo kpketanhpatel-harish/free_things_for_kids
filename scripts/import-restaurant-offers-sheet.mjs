@@ -1,26 +1,26 @@
 /**
- * Import chicago_family_events_combined Google Sheet → staging_activities,
- * then optionally promote normalized rows into activities.
+ * Import chicago_kids_restaurant_deals Google Sheet → staging_restaurant_offers,
+ * then optionally promote normalized rows into restaurant_offers.
  *
  * Prerequisites:
- * 1. Run supabase/staging_activities.sql
- * 2. Run supabase/activities_schema_updates.sql
+ * 1. Run supabase/staging_restaurant_offers.sql
+ * 2. Run supabase/restaurant_offers_schema_updates.sql
  * 3. Add SUPABASE_SERVICE_ROLE_KEY to .env.local
  *
  * Usage:
- *   npm run import:activities
- *   npm run import:activities -- --promote
- *   npm run import:activities -- --promote --dry-run
+ *   npm run import:restaurant-offers
+ *   npm run import:restaurant-offers -- --promote
+ *   npm run import:restaurant-offers -- --promote --dry-run
  */
 
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseCsv } from "./lib/csv.mjs";
-import { normalizeSheetRow } from "./lib/normalizeActivity.mjs";
+import { normalizeSheetRow } from "./lib/normalizeRestaurantOffer.mjs";
 
-const DEFAULT_SHEET_ID = "1ofdBQ8tdmUH_1Bs3DHxHJN-nZ8YuPD9vmgUV1v5RrH8";
-const DEFAULT_GID = "1481875881";
+const DEFAULT_SHEET_ID = "1bDU3aHIfOZUTMvQOv0_pm2vFAB-grP14Q3VP-j5e4ts";
+const DEFAULT_GID = "0";
 
 function loadEnvLocal() {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -55,14 +55,26 @@ function getArgs(argv) {
 }
 
 async function fetchSheetCsv(sheetId, gid) {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(
-      `Failed to download sheet CSV (${response.status}). Confirm the sheet is shared as "Anyone with the link".`,
-    );
+  const urls = [
+    gid && gid !== "0"
+      ? `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`
+      : null,
+    `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`,
+    `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`,
+  ].filter(Boolean);
+
+  let lastStatus = 0;
+  for (const url of urls) {
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.text();
+    }
+    lastStatus = response.status;
   }
-  return response.text();
+
+  throw new Error(
+    `Failed to download sheet CSV (${lastStatus}). Confirm the sheet is shared as "Anyone with the link".`,
+  );
 }
 
 function chunk(items, size) {
@@ -73,8 +85,7 @@ function chunk(items, size) {
   return groups;
 }
 
-/** Prefer published + richer rows when sheet has duplicate identities. */
-function dedupeActivities(rows) {
+function dedupeOffers(rows) {
   const byId = new Map();
 
   for (const row of rows) {
@@ -84,11 +95,13 @@ function dedupeActivities(rows) {
       continue;
     }
 
-    const score = (activity) =>
-      (activity.status === "published" ? 4 : 0) +
-      (activity.start_time ? 2 : 0) +
-      (activity.address ? 1 : 0) +
-      (activity.neighborhood ? 1 : 0);
+    const score = (offer) =>
+      (offer.status === "published" ? 4 : 0) +
+      (offer.eligible_days?.length ? 2 : 0) +
+      (offer.eligible_hours && offer.eligible_hours !== "See offer details"
+        ? 1
+        : 0) +
+      (offer.offer_summary?.length ?? 0) / 100;
 
     if (score(row) >= score(existing)) {
       byId.set(row.id, row);
@@ -104,8 +117,8 @@ async function main() {
 
   const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY;
-  const sheetId = env.ACTIVITIES_SHEET_ID || DEFAULT_SHEET_ID;
-  const gid = env.ACTIVITIES_SHEET_GID || DEFAULT_GID;
+  const sheetId = env.RESTAURANT_OFFERS_SHEET_ID || DEFAULT_SHEET_ID;
+  const gid = env.RESTAURANT_OFFERS_SHEET_GID || DEFAULT_GID;
 
   console.log(`Downloading sheet ${sheetId} (gid=${gid})...`);
   const csv = await fetchSheetCsv(sheetId, gid);
@@ -115,7 +128,7 @@ async function main() {
   const normalized = rows.map((row) => normalizeSheetRow(row));
   const stagingRows = normalized
     .map((item) => item.staging)
-    .filter((row) => row.event_name && row.row_hash)
+    .filter((row) => row.restaurant_name && row.row_hash)
     .map((row) => ({
       ...row,
       updated_at: new Date().toISOString(),
@@ -125,23 +138,19 @@ async function main() {
 
   if (dryRun) {
     const publishable = normalized.filter(
-      (item) => item.activity?.status === "published",
-    ).length;
-    const draft = normalized.filter(
-      (item) => item.activity?.status === "draft",
-    ).length;
+      (item) => item.offer?.status === "published",
+    );
+    const draft = normalized.filter((item) => item.offer?.status === "draft");
     console.log(
       `[dry-run] Would upsert ${stagingRows.length} staging rows` +
         (promote
-          ? `; promote ${publishable} published + ${draft} draft activities`
+          ? `; promote ${publishable.length} published + ${draft.length} draft offers`
           : " (promotion skipped)"),
     );
-    console.log("Sample published titles:");
-    for (const item of normalized
-      .filter((entry) => entry.activity?.status === "published")
-      .slice(0, 8)) {
+    console.log("Sample published offers:");
+    for (const item of publishable.slice(0, 10)) {
       console.log(
-        `  - ${item.activity.date} | ${item.activity.neighborhood} | ${item.activity.title}`,
+        `  - ${item.offer.neighborhood} | ${item.offer.restaurant_name} | ${item.offer.eligible_days.join(", ")} | ${item.offer.eligible_hours}`,
       );
     }
     return;
@@ -160,7 +169,7 @@ async function main() {
   let stagingUpserted = 0;
   for (const group of chunk(stagingRows, 100)) {
     const { error, data } = await supabase
-      .from("staging_activities")
+      .from("staging_restaurant_offers")
       .upsert(group, { onConflict: "row_hash" })
       .select("id, row_hash");
 
@@ -172,12 +181,12 @@ async function main() {
   console.log(`Upserted ${stagingUpserted} staging rows`);
 
   if (!promote) {
-    console.log("Done. Re-run with --promote to write normalized activities.");
+    console.log("Done. Re-run with --promote to write normalized offers.");
     return;
   }
 
   const { data: stagingRecords, error: stagingReadError } = await supabase
-    .from("staging_activities")
+    .from("staging_restaurant_offers")
     .select("id, row_hash");
 
   if (stagingReadError) {
@@ -188,36 +197,36 @@ async function main() {
     (stagingRecords ?? []).map((record) => [record.row_hash, record.id]),
   );
 
-  const activityRows = dedupeActivities(
+  const offerRows = dedupeOffers(
     normalized
-      .filter((item) => item.activity)
+      .filter((item) => item.offer)
       .map((item) => ({
-        ...item.activity,
+        ...item.offer,
         staging_id: stagingIdByHash.get(item.staging.row_hash) ?? null,
       })),
   );
 
   console.log(
-    `Promoting ${activityRows.length} unique activities (duplicates collapsed)`,
+    `Promoting ${offerRows.length} unique offers (duplicates collapsed)`,
   );
 
-  let activitiesUpserted = 0;
-  for (const group of chunk(activityRows, 100)) {
+  let offersUpserted = 0;
+  for (const group of chunk(offerRows, 100)) {
     const { error, data } = await supabase
-      .from("activities")
+      .from("restaurant_offers")
       .upsert(group, { onConflict: "id" })
       .select("id, status");
 
     if (error) {
-      throw new Error(`Activities upsert failed: ${error.message}`);
+      throw new Error(`Restaurant offers upsert failed: ${error.message}`);
     }
-    activitiesUpserted += data?.length ?? group.length;
+    offersUpserted += data?.length ?? group.length;
   }
 
-  const published = activityRows.filter((row) => row.status === "published").length;
-  const draft = activityRows.filter((row) => row.status === "draft").length;
+  const published = offerRows.filter((row) => row.status === "published").length;
+  const draft = offerRows.filter((row) => row.status === "draft").length;
   console.log(
-    `Upserted ${activitiesUpserted} activities (${published} published, ${draft} draft)`,
+    `Upserted ${offersUpserted} offers (${published} published, ${draft} draft)`,
   );
   console.log("Done.");
 }
