@@ -1,7 +1,9 @@
 import RestaurantOfferList from "@/components/RestaurantOfferList";
-import { restaurantOffers } from "@/data/restaurantOffers";
+import { getRestaurantOffers } from "@/lib/restaurantOffers";
 
-export default function KidsEatFreePage() {
+export default async function KidsEatFreePage() {
+  const restaurantOffers = await getRestaurantOffers();
+
   return (
     <main className="bg-gray-50">
       <section className="mx-auto max-w-6xl px-4 py-12">

@@ -4,14 +4,17 @@ import ActivityCard from "@/components/ActivityCard";
 import RestaurantOfferCard from "@/components/RestaurantOfferCard";
 import SearchBar from "@/components/SearchBar";
 import { getActivities } from "@/lib/activities";
-import { restaurantOffers } from "@/data/restaurantOffers";
+import { getRestaurantOffers } from "@/lib/restaurantOffers";
 import {
   getUpcomingActivities,
   getUpcomingRestaurantOffers,
 } from "@/lib/upcoming";
 
 export default async function HomePage() {
-  const activities = await getActivities();
+  const [activities, restaurantOffers] = await Promise.all([
+    getActivities(),
+    getRestaurantOffers(),
+  ]);
   const upcomingActivities = getUpcomingActivities(activities, 3);
   const upcomingOffers = getUpcomingRestaurantOffers(restaurantOffers, 3);
 

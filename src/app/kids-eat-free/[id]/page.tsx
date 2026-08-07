@@ -1,23 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { restaurantOffers } from "@/data/restaurantOffers";
+import { getRestaurantOfferById } from "@/lib/restaurantOffers";
 
 type RestaurantOfferDetailPageProps = {
   params: Promise<{ id: string }>;
 };
 
-export function generateStaticParams() {
-  return restaurantOffers.map((offer) => ({
-    id: offer.id,
-  }));
-}
-
 export default async function RestaurantOfferDetailPage({
   params,
 }: RestaurantOfferDetailPageProps) {
   const { id } = await params;
-
-  const offer = restaurantOffers.find((item) => item.id === id);
+  const offer = await getRestaurantOfferById(id);
 
   if (!offer) {
     notFound();
