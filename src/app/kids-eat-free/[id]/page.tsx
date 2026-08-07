@@ -69,6 +69,33 @@ export default async function RestaurantOfferDetailPage({
               <dd>{offer.neighborhood}</dd>
             </div>
 
+            {offer.address ? (
+              <div>
+                <dt className="font-semibold">Address</dt>
+                <dd>{offer.address}</dd>
+              </div>
+            ) : null}
+
+            {offer.website ? (
+              <div>
+                <dt className="font-semibold">Website</dt>
+                <dd>
+                  <a
+                    href={
+                      /^https?:\/\//i.test(offer.website)
+                        ? offer.website
+                        : `https://${offer.website}`
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-orange-700 underline-offset-2 hover:underline"
+                  >
+                    {offer.website}
+                  </a>
+                </dd>
+              </div>
+            ) : null}
+
             <div>
               <dt className="font-semibold">Eligible days</dt>
               <dd>{offer.eligibleDays.join(", ")}</dd>

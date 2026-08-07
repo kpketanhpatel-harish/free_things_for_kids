@@ -6,6 +6,42 @@ type RestaurantOfferCardProps = {
   variant?: "default" | "upcoming";
 };
 
+function websiteHref(website: string): string {
+  if (/^https?:\/\//i.test(website)) {
+    return website;
+  }
+  return `https://${website}`;
+}
+
+function OfferLocationDetails({ offer }: { offer: RestaurantOffer }) {
+  return (
+    <>
+      {offer.address ? (
+        <div>
+          <dt className="inline font-semibold">Address: </dt>
+          <dd className="inline">{offer.address}</dd>
+        </div>
+      ) : null}
+
+      {offer.website ? (
+        <div>
+          <dt className="inline font-semibold">Website: </dt>
+          <dd className="inline">
+            <a
+              href={websiteHref(offer.website)}
+              target="_blank"
+              rel="noreferrer"
+              className="text-orange-700 underline-offset-2 hover:underline"
+            >
+              Visit website
+            </a>
+          </dd>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 export default function RestaurantOfferCard({
   offer,
   variant = "default",
@@ -22,6 +58,8 @@ export default function RestaurantOfferCard({
         </p>
 
         <dl className="mt-3 space-y-1 text-sm text-gray-700">
+          <OfferLocationDetails offer={offer} />
+
           <div>
             <dt className="inline font-semibold">Available: </dt>
             <dd className="inline">{offer.eligibleDays.join(", ")}</dd>
@@ -94,6 +132,8 @@ export default function RestaurantOfferCard({
       <p className="mt-2 text-gray-600">{offer.offerSummary}</p>
 
       <dl className="mt-4 space-y-2 text-sm text-gray-700">
+        <OfferLocationDetails offer={offer} />
+
         <div>
           <dt className="inline font-semibold">Available: </dt>
           <dd className="inline">{offer.eligibleDays.join(", ")}</dd>
