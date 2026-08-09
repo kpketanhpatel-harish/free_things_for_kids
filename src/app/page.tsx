@@ -3,12 +3,44 @@ import Link from "next/link";
 import ActivityCard from "@/components/ActivityCard";
 import RestaurantOfferCard from "@/components/RestaurantOfferCard";
 import SearchBar from "@/components/SearchBar";
+import VerticalActivityCarousel from "@/components/VerticalActivityCarousel";
 import { getActivities } from "@/lib/activities";
 import { getRestaurantOffers } from "@/lib/restaurantOffers";
 import {
+  getHomeQuickLists,
   getUpcomingActivities,
   getUpcomingRestaurantOffers,
+  type HomeQuickList,
 } from "@/lib/upcoming";
+
+function ActivityQuickList({ list }: { list: HomeQuickList }) {
+  const headingId = `${list.title.toLowerCase().replace(/\s+/g, "-")}-heading`;
+
+  return (
+    <section aria-labelledby={headingId}>
+      <h2
+        id={headingId}
+        className="mb-2 text-xl font-semibold text-gray-900"
+      >
+        {list.title}
+      </h2>
+
+      {list.activities.length > 0 ? (
+        <VerticalActivityCarousel activities={list.activities} />
+      ) : (
+        <div className="rounded-lg border border-dashed border-sky-200 bg-white/80 px-3 py-4 text-sm text-gray-600">
+          <p>{list.emptyMessage}</p>
+          <Link
+            href="/activities"
+            className="mt-2 inline-block font-medium text-blue-700 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Browse all activities
+          </Link>
+        </div>
+      )}
+    </section>
+  );
+}
 
 // Redeploy trigger: ensure Vercel picks up Supabase env vars.
 export default async function HomePage() {
@@ -16,15 +48,23 @@ export default async function HomePage() {
     getActivities(),
     getRestaurantOffers(),
   ]);
+  const { primary, secondary } = getHomeQuickLists(activities, 5);
   const upcomingActivities = getUpcomingActivities(activities, 3);
   const upcomingOffers = getUpcomingRestaurantOffers(restaurantOffers, 3);
 
   return (
     <main className="bg-sky-50">
+      <section className="mx-auto max-w-6xl px-4 pt-3 pb-5 md:pt-4 md:pb-6">
+        <div className="grid gap-6 md:grid-cols-2 md:gap-10">
+          <ActivityQuickList list={primary} />
+          <ActivityQuickList list={secondary} />
+        </div>
+      </section>
+
       <section className="relative min-h-[22rem] overflow-hidden md:min-h-[28rem]">
         <Image
-          src="/images/chicago-skyline-hero.png"
-          alt="Chicago skyline at dusk over Lake Michigan"
+          src="/images/roscoe-village-bridge.png"
+          alt="Roscoe Village railroad bridge mural reading The Village Within the City"
           fill
           priority
           sizes="100vw"

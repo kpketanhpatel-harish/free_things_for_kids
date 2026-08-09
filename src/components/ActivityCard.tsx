@@ -5,8 +5,19 @@ import { formatActivityDate } from "@/lib/formatActivityDate";
 
 type ActivityCardProps = {
   activity: Activity;
-  variant?: "default" | "upcoming";
+  variant?: "default" | "upcoming" | "compact";
 };
+
+function locationLabel(activity: Activity): string {
+  if (
+    activity.neighborhood &&
+    activity.venue &&
+    activity.venue !== "See event page"
+  ) {
+    return `${activity.venue} · ${activity.neighborhood}`;
+  }
+  return activity.venue || activity.neighborhood;
+}
 
 function ActivityDetails({
   activity,
@@ -64,6 +75,24 @@ export default function ActivityCard({
   activity,
   variant = "default",
 }: ActivityCardProps) {
+  if (variant === "compact") {
+    return (
+      <li>
+        <Link
+          href={`/activities/${activity.id}`}
+          className="block rounded-lg border border-sky-100 bg-white px-3 py-2.5 shadow-sm transition hover:border-blue-300 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          <p className="truncate text-sm font-semibold text-gray-900">
+            {activity.title}
+          </p>
+          <p className="mt-0.5 truncate text-xs text-gray-600">
+            {locationLabel(activity)}
+          </p>
+        </Link>
+      </li>
+    );
+  }
+
   if (variant === "upcoming") {
     return (
       <article className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
