@@ -50,11 +50,12 @@ export default function Header() {
 
           <span>
             <span className="block font-bold text-gray-900">
-              Free Things for Kids
+              The Free Kid List
             </span>
 
             <span className="block text-xs text-gray-500">
-              Chicago family guide
+              Fun activities in the Roscoe Village, Lakeview, and Lincoln Park
+              neighborhoods
             </span>
           </span>
         </Link>
