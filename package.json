@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "import:activities": "node scripts/import-activities-sheet.mjs",
-    "import:restaurant-offers": "node scripts/import-restaurant-offers-sheet.mjs"
+    "import:restaurant-offers": "node scripts/import-restaurant-offers-sheet.mjs",
+    "import:construction-sites": "node scripts/import-construction-sites-sheet.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

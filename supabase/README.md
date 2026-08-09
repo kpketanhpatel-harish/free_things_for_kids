@@ -59,3 +59,32 @@ Promotion rules:
 - Normalized offers with target neighborhood + parseable days → `published`
 - Everything else usable → `draft`
 - `confirmed` defaults to `false` (aggregator sources)
+
+## Construction watch sites import
+
+Sheet: [Chicago Heavy-Machinery Construction Watch Sites](https://docs.google.com/spreadsheets/d/1wYDscLNSOgx58DkPafWqRN2m3HzqIrJevJFXOOdXgt0/edit?usp=sharing)
+
+Run in order in the SQL Editor:
+
+1. `staging_construction_sites.sql`
+2. `construction_sites.sql`
+
+Then:
+
+```bash
+# Preview only
+npm run import:construction-sites -- --dry-run
+
+# Load staging only
+npm run import:construction-sites
+
+# Load staging + promote into construction_sites
+npm run import:construction-sites -- --promote
+```
+
+Promotion rules:
+
+- All raw rows land in `staging_construction_sites`
+- Lakeview / Roscoe Village / Lincoln Park → `status = published`
+- Other neighborhoods → `status = draft` (hidden by RLS)
+- Optional env overrides: `CONSTRUCTION_SHEET_ID`, `CONSTRUCTION_SHEET_GID`
