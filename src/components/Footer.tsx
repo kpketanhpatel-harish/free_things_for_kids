@@ -37,6 +37,15 @@ export default function Footer() {
                   Kids Eat Free
                 </Link>
               </li>
+
+              <li>
+                <Link
+                  href="/construction-sites"
+                  className="text-sm transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+                >
+                  Construction Sites
+                </Link>
+              </li>
             </ul>
           </nav>
 

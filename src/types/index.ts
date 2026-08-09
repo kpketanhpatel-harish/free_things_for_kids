@@ -38,3 +38,31 @@ export type RestaurantOffer = {
   website?: string;
   sourceUrl?: string;
 };
+
+export type ConstructionSite = {
+  id: string;
+  siteId: string;
+  title: string;
+  summary?: string;
+  address?: string;
+  neighborhood?: string;
+  latitude?: number;
+  longitude?: number;
+  projectType?: string;
+  likelyMachinery?: string;
+  activityStatus?: string;
+  evidenceClass?: string;
+  activeStart?: string;
+  activeEnd?: string;
+  viewingSuitability?: string;
+  viewingSuitabilityScore?: number;
+  kidInterestScore?: number;
+  confidenceScore?: number;
+  permitProjectIds?: string;
+  sourceUrl?: string;
+  sourceRecordDate?: string;
+  lastChecked?: string;
+  workDescription?: string;
+  contractorAgency?: string;
+  notes?: string;
+};

@@ -85,6 +85,6 @@ npm run import:construction-sites -- --promote
 Promotion rules:
 
 - All raw rows land in `staging_construction_sites`
-- Lakeview / Roscoe Village / Lincoln Park → `status = published`
-- Other neighborhoods → `status = draft` (hidden by RLS)
+- All normalized sites promote as `published` (browsable in the app)
+- The `/construction-sites` page sorts Roscoe Village / Lakeview / Lincoln Park first
 - Optional env overrides: `CONSTRUCTION_SHEET_ID`, `CONSTRUCTION_SHEET_GID`

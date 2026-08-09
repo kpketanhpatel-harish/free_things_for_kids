@@ -168,8 +168,6 @@ export function normalizeSheetRow(row) {
   }
 
   const neighborhood = inferNeighborhood(neighborhoodRaw);
-  const inTarget =
-    neighborhood != null && TARGET_NEIGHBORHOODS.includes(neighborhood);
 
   const summary =
     activityStatus ||
@@ -204,7 +202,8 @@ export function normalizeSheetRow(row) {
     work_description: workDescription,
     contractor_agency: contractor,
     notes,
-    status: inTarget ? "published" : "draft",
+    // All watch sites are browsable; UI sorts target neighborhoods first.
+    status: "published",
     source_name: "chicago_construction_watch_sites",
   };
 
