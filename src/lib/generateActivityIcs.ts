@@ -1,5 +1,16 @@
 import type { Activity } from "@/types";
 
+export type ActivityCalendarEvent = {
+  title: string;
+  description: string;
+  location: string;
+  sourceUrl: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+};
+
 function escapeIcsText(value: string): string {
   return value
     .replace(/\\/g, "\\\\")
@@ -32,19 +43,73 @@ export function canGenerateActivityIcs(activity: Activity): boolean {
   return Boolean(activity.startTime && /^\d{2}:\d{2}$/.test(activity.startTime));
 }
 
-export function generateActivityIcs(activity: Activity): string {
+export function getActivityCalendarEvent(
+  activity: Activity,
+): ActivityCalendarEvent {
   if (!activity.startTime || !canGenerateActivityIcs(activity)) {
     throw new Error("Activity is missing a parseable start time");
   }
 
   const endTime = activity.endTime ?? addOneHour(activity.startTime);
-  const location = [activity.venue, activity.address].filter(Boolean).join(", ");
-  const description = [
-    activity.summary,
-    `Age group: ${activity.ageGroup}`,
-    `Registration: ${activity.registrationRequired ? "Required" : "Not required"}`,
-    `More info: ${activity.sourceUrl}`,
-  ].join("\\n");
+
+  return {
+    title: activity.title,
+    description: [
+      activity.summary,
+      `Age group: ${activity.ageGroup}`,
+      `Registration: ${activity.registrationRequired ? "Required" : "Not required"}`,
+      `More info: ${activity.sourceUrl}`,
+    ].join("\n"),
+    location: [activity.venue, activity.address].filter(Boolean).join(", "),
+    sourceUrl: activity.sourceUrl,
+    startDate: activity.date,
+    endDate: activity.date,
+    startTime: activity.startTime,
+    endTime,
+  };
+}
+
+function toGoogleDates(event: ActivityCalendarEvent): string {
+  const start = formatIcsLocalDateTime(event.startDate, event.startTime);
+  const end = formatIcsLocalDateTime(event.endDate, event.endTime);
+  return `${start}/${end}`;
+}
+
+/** Local wall time as ISO-like string without timezone (Outlook web accepts this). */
+function toOutlookDateTime(date: string, time: string): string {
+  return `${date}T${time}:00`;
+}
+
+export function buildGoogleCalendarUrl(activity: Activity): string {
+  const event = getActivityCalendarEvent(activity);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: event.title,
+    dates: toGoogleDates(event),
+    details: `${event.description}\n${event.sourceUrl}`,
+    location: event.location,
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+export function buildOutlookCalendarUrl(activity: Activity): string {
+  const event = getActivityCalendarEvent(activity);
+  const params = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: event.title,
+    body: `${event.description}\n${event.sourceUrl}`,
+    location: event.location,
+    startdt: toOutlookDateTime(event.startDate, event.startTime),
+    enddt: toOutlookDateTime(event.endDate, event.endTime),
+  });
+
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
+}
+
+export function generateActivityIcs(activity: Activity): string {
+  const event = getActivityCalendarEvent(activity);
 
   const lines = [
     "BEGIN:VCALENDAR",
@@ -55,12 +120,12 @@ export function generateActivityIcs(activity: Activity): string {
     "BEGIN:VEVENT",
     `UID:${activity.id}@free-things-for-kids-chicago`,
     `DTSTAMP:${formatIcsUtcStamp(new Date())}`,
-    `DTSTART:${formatIcsLocalDateTime(activity.date, activity.startTime)}`,
-    `DTEND:${formatIcsLocalDateTime(activity.date, endTime)}`,
-    `SUMMARY:${escapeIcsText(activity.title)}`,
-    `DESCRIPTION:${escapeIcsText(description)}`,
-    `LOCATION:${escapeIcsText(location)}`,
-    `URL:${activity.sourceUrl}`,
+    `DTSTART:${formatIcsLocalDateTime(event.startDate, event.startTime)}`,
+    `DTEND:${formatIcsLocalDateTime(event.endDate, event.endTime)}`,
+    `SUMMARY:${escapeIcsText(event.title)}`,
+    `DESCRIPTION:${escapeIcsText(event.description)}`,
+    `LOCATION:${escapeIcsText(event.location)}`,
+    `URL:${event.sourceUrl}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ];
