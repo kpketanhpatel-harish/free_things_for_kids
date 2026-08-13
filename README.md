@@ -30,6 +30,24 @@ npm run import:construction-sites -- --promote
 
 Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
+## Feedback form (Supabase + email alert)
+
+The header **Feedback** button opens a modal. Submissions are saved to the `feedback` table and emailed to **freekidlist@gmail.com**.
+
+1. Run `supabase/feedback.sql` in the Supabase SQL Editor
+2. Create a [Gmail App Password](https://myaccount.google.com/apppasswords) for `freekidlist@gmail.com` (2-Step Verification must be on)
+3. Add to `.env.local` (and Vercel env for production):
+
+```env
+GMAIL_USER=freekidlist@gmail.com
+GMAIL_APP_PASSWORD=your_16_char_app_password
+FEEDBACK_NOTIFY_EMAIL=freekidlist@gmail.com
+```
+
+4. Restart `npm run dev`
+
+View submissions anytime in **Table Editor → feedback**. If email env vars are missing, feedback still saves to Supabase.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

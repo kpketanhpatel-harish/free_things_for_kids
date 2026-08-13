@@ -4,6 +4,7 @@
 
 - `activities.sql`
 - `restaurant_offers.sql`
+- `feedback.sql` (in-app Feedback modal submissions)
 
 ## 2. Staging + schema updates for sheet import
 
@@ -88,3 +89,13 @@ Promotion rules:
 - All normalized sites promote as `published` (browsable in the app)
 - The `/construction-sites` page sorts Roscoe Village / Lakeview / Lincoln Park first
 - Optional env overrides: `CONSTRUCTION_SHEET_ID`, `CONSTRUCTION_SHEET_GID`
+
+## Feedback table
+
+Run `feedback.sql` in the SQL Editor.
+
+- Header **Feedback** modal posts to `/api/feedback`
+- API inserts into `public.feedback` and emails `FEEDBACK_NOTIFY_EMAIL` (default `freekidlist@gmail.com`) via Gmail SMTP
+- RLS: anon/authenticated can **insert** only; no public read
+- Review rows in **Table Editor → feedback**
+- Requires server env: `GMAIL_USER`, `GMAIL_APP_PASSWORD` (see root README)

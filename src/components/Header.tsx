@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import FeedbackButton from "@/components/FeedbackButton";
 
 type NavigationItem = {
   label: string;
@@ -89,6 +90,10 @@ export default function Header() {
                 </li>
               );
             })}
+
+            <li>
+              <FeedbackButton />
+            </li>
 
             <li>
               <Link
