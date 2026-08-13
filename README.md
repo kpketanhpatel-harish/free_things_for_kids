@@ -30,6 +30,14 @@ npm run import:construction-sites -- --promote
 
 Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
+## Analytics (Vercel)
+
+Page views and visitors are tracked with [Vercel Web Analytics](https://vercel.com/docs/analytics).
+
+1. In the Vercel project, open **Analytics** and enable **Web Analytics**
+2. Deploy a build that includes `@vercel/analytics` (already added in `src/app/layout.tsx`)
+3. View visitors / pageviews in the project **Analytics** tab (data appears after production traffic)
+
 ## Feedback form (Supabase + email alert)
 
 The header **Feedback** button opens a modal. Submissions are saved to the `feedback` table and emailed to **freekidlist@gmail.com**.
