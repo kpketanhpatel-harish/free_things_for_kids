@@ -25,6 +25,10 @@ const navigationItems: NavigationItem[] = [
     label: "Construction Sites",
     href: "/construction-sites",
   },
+  {
+    label: "About",
+    href: "/about",
+  },
 ];
 
 function isCurrentRoute(pathname: string, href: string) {

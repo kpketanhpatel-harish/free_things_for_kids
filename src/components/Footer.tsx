@@ -46,6 +46,15 @@ export default function Footer() {
                   Construction Sites
                 </Link>
               </li>
+
+              <li>
+                <Link
+                  href="/about"
+                  className="text-sm transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+                >
+                  About
+                </Link>
+              </li>
             </ul>
           </nav>
 
