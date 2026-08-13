@@ -77,17 +77,13 @@ export default function ActivityCard({
 }: ActivityCardProps) {
   if (variant === "compact") {
     return (
-      <li>
+      <li className="w-fit max-w-full">
         <Link
           href={`/activities/${activity.id}`}
-          className="block rounded-lg border border-sky-100 bg-white px-3 py-2.5 shadow-sm transition hover:border-blue-300 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          title={locationLabel(activity)}
+          className="inline-flex max-w-full items-center rounded-md border border-sky-100 bg-white px-2.5 py-1 text-sm font-medium text-gray-900 shadow-sm transition hover:border-blue-300 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          <p className="truncate text-sm font-semibold text-gray-900">
-            {activity.title}
-          </p>
-          <p className="mt-0.5 truncate text-xs text-gray-600">
-            {locationLabel(activity)}
-          </p>
+          <span className="truncate">{activity.title}</span>
         </Link>
       </li>
     );

@@ -87,7 +87,7 @@ export default function FeedbackButton() {
         }}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="inline-flex rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+        className="inline-flex rounded-lg bg-amber-500 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
       >
         Feedback
       </button>

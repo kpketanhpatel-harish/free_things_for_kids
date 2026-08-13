@@ -38,7 +38,7 @@ export default function VerticalActivityCarousel({
     const firstItem = el.querySelector("li");
     const itemHeight = firstItem
       ? firstItem.getBoundingClientRect().height + 8
-      : 72;
+      : 40;
 
     el.scrollBy({
       top: direction === "down" ? itemHeight : -itemHeight,
@@ -60,8 +60,8 @@ export default function VerticalActivityCarousel({
         onScroll={updateScrollState}
         className={
           needsCarousel
-            ? "max-h-[13.5rem] space-y-2 overflow-y-auto overscroll-contain scroll-smooth snap-y snap-mandatory pr-1 [scrollbar-width:thin] [&_li]:snap-start"
-            : "space-y-2"
+            ? "max-h-[7.5rem] space-y-1.5 overflow-y-auto overscroll-contain scroll-smooth snap-y snap-mandatory pr-1 [scrollbar-width:thin] [&_li]:snap-start"
+            : "space-y-1.5"
         }
       >
         {activities.map((activity) => (
