@@ -87,7 +87,7 @@ export default function FeedbackButton() {
         }}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="inline-flex rounded-lg bg-amber-500 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
+        className="inline-flex rounded-lg border border-gray-300 bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
       >
         Feedback
       </button>
@@ -219,7 +219,7 @@ export default function FeedbackButton() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+                  className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   {status === "submitting" ? "Sending…" : "Send feedback"}
                 </button>

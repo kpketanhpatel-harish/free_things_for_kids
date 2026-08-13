@@ -60,8 +60,8 @@ export default function VerticalActivityCarousel({
         onScroll={updateScrollState}
         className={
           needsCarousel
-            ? "max-h-[7.5rem] space-y-1.5 overflow-y-auto overscroll-contain scroll-smooth snap-y snap-mandatory pr-1 [scrollbar-width:thin] [&_li]:snap-start"
-            : "space-y-1.5"
+            ? "inline-flex w-max max-w-full flex-col space-y-1.5 max-h-[7.5rem] overflow-y-auto overscroll-contain scroll-smooth snap-y snap-mandatory pr-1 [scrollbar-width:thin] [&_li]:snap-start"
+            : "inline-flex w-max max-w-full flex-col space-y-1.5"
         }
       >
         {activities.map((activity) => (

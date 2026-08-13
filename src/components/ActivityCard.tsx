@@ -77,11 +77,11 @@ export default function ActivityCard({
 }: ActivityCardProps) {
   if (variant === "compact") {
     return (
-      <li className="w-fit max-w-full">
+      <li className="w-full">
         <Link
           href={`/activities/${activity.id}`}
           title={locationLabel(activity)}
-          className="inline-flex max-w-full items-center rounded-md border border-sky-100 bg-white px-2.5 py-1 text-sm font-medium text-gray-900 shadow-sm transition hover:border-blue-300 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="flex w-full items-center rounded-md border border-sky-100 bg-white px-2.5 py-1 text-sm font-medium text-gray-900 shadow-sm transition hover:border-blue-300 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <span className="truncate">{activity.title}</span>
         </Link>

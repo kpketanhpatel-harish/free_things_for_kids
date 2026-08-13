@@ -11,7 +11,7 @@ type NavigationItem = {
 
 const navigationItems: NavigationItem[] = [
   {
-    label: "Free Activities",
+    label: "Activities",
     href: "/activities",
   },
   {
@@ -72,8 +72,8 @@ export default function Header() {
                     aria-current={isActive ? "page" : undefined}
                     className={
                       isActive
-                        ? "inline-flex rounded-lg bg-blue-700 px-2.5 py-1.5 text-xs font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
-                        : "inline-flex rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
+                        ? "inline-flex rounded-lg border border-gray-300 bg-blue-700 px-2.5 py-1.5 text-xs font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
+                        : "inline-flex rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
                     }
                   >
                     {item.label}
