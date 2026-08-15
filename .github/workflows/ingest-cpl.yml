@@ -1,0 +1,33 @@
+name: Ingest CPL events
+
+on:
+  schedule:
+    # 11:00 UTC ≈ 6:00 AM Chicago during CDT
+    - cron: "0 11 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ingest-cpl
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ingest Chicago Public Library events
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SOCRATA_APP_TOKEN: ${{ secrets.SOCRATA_APP_TOKEN }}
+        run: node scripts/ingest.mjs --source cpl --promote

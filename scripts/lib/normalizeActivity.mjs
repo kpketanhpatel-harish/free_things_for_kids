@@ -29,11 +29,13 @@ const VENUE_NEIGHBORHOODS = {
 const NEIGHBORHOOD_ALIASES = {
   lakeview: "Lakeview",
   "lake view": "Lakeview",
+  wrigleyville: "Lakeview",
+  "wrigley ville": "Lakeview",
   "roscoe village": "Roscoe Village",
   "lincoln park": "Lincoln Park",
 };
 
-function clean(value) {
+export function clean(value) {
   if (value == null) return null;
   const trimmed = String(value).trim();
   if (!trimmed || /^not stated$/i.test(trimmed)) return null;

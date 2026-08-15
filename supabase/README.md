@@ -40,6 +40,21 @@ Promotion rules:
 - Lakeview / Roscoe Village / Lincoln Park → `status = published` (visible in the app)
 - Other neighborhoods → `status = draft` (hidden by RLS)
 
+## Chicago Public Library ingest
+
+No extra SQL. Uses the existing `staging_activities` and `activities` tables.
+
+```bash
+npm run ingest:cpl -- --dry-run
+npm run ingest:cpl -- --promote
+```
+
+Promotion rules:
+
+- Kid-audience events at Merlo, Lincoln Belmont, and Lincoln Park
+- Target neighborhoods → `published`; anything else usable → `draft`
+- Activity ids are `cpl:<event_id>` and do not replace spreadsheet row ids
+
 ## Kids eat free / restaurant offers import
 
 Run in order in the SQL Editor:

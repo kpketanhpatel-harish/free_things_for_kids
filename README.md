@@ -15,7 +15,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Sheet imports stage raw rows, then optionally promote normalized rows into app tables. Full SQL setup and promotion rules live in [`supabase/README.md`](supabase/README.md).
 
 ```bash
-# Activities
+# Chicago Public Library (Merlo, Lincoln Belmont, Lincoln Park)
+npm run ingest:cpl -- --dry-run
+npm run ingest:cpl -- --promote
+
+# Activities spreadsheet
 npm run import:activities -- --dry-run
 npm run import:activities -- --promote
 
@@ -28,7 +32,23 @@ npm run import:construction-sites -- --dry-run
 npm run import:construction-sites -- --promote
 ```
 
-Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
+Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Dry-run for CPL does not need those keys.
+
+### Chicago Public Library ingest
+
+Kid programs at **Merlo**, **Lincoln Belmont**, and **Lincoln Park** are pulled from the [Chicago Data Portal CPL events dataset](https://data.cityofchicago.org/Events/Chicago-Public-Library-Events/vsdy-d8k7), then staged and promoted into the existing `activities` table. Uptown is excluded. Wrigleyville maps to Lakeview.
+
+```bash
+npm run ingest:cpl -- --dry-run
+npm run ingest:cpl -- --promote
+```
+
+A GitHub Action (`.github/workflows/ingest-cpl.yml`) runs this daily and on demand. Add repository secrets:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+Optional: `SOCRATA_APP_TOKEN` if the public dataset starts rate-limiting.
 
 ## Analytics (Vercel)
 
