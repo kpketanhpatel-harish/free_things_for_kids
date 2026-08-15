@@ -4,7 +4,8 @@
  * Usage:
  *   node scripts/ingest.mjs --source cpl --dry-run
  *   node scripts/ingest.mjs --source cpd --dry-run
- *   node scripts/ingest.mjs --source cpd --promote
+ *   node scripts/ingest.mjs --source local --dry-run
+ *   node scripts/ingest.mjs --source local --promote
  */
 
 import { createClient } from "@supabase/supabase-js";
@@ -14,6 +15,7 @@ import { normalizeCpdActivity } from "./lib/normalizeCpdActivity.mjs";
 import { promoteActivities } from "./lib/promoteActivities.mjs";
 import { fetchCplEvents } from "./sources/cpl.mjs";
 import { fetchCpdActivities } from "./sources/cpd.mjs";
+import { loadLocalActivities } from "./sources/local.mjs";
 
 const SOURCES = {
   cpl: {
@@ -35,6 +37,15 @@ const SOURCES = {
       });
       console.log(`Fetched ${rows.length} Park District rows`);
       return rows.map((row) => normalizeCpdActivity(row));
+    },
+  },
+  local: {
+    description:
+      "Lakeview/Roscoe Village calendar, Green City Market Lincoln Park, Roscoe Books story time",
+    async load() {
+      const normalized = await loadLocalActivities();
+      console.log(`Built ${normalized.length} local source rows`);
+      return normalized;
     },
   },
 };

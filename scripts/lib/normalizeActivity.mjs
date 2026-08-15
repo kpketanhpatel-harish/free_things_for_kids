@@ -25,8 +25,20 @@ const VENUE_NEIGHBORHOODS = {
   "roscoe village farmers market": "Roscoe Village",
   "lowline market": "Lakeview",
   "lowline plaza": "Lakeview",
+  "green city market": "Lincoln Park",
+  "roscoe books": "Roscoe Village",
+  "three avenues": "Lakeview",
+  "gross park": "Lakeview",
+  choochoo: "Lakeview",
+  southport: "Lakeview",
   "bitterpops": "Lakeview",
   itoko: "Lakeview",
+};
+
+const ZIP_NEIGHBORHOODS = {
+  60614: "Lincoln Park",
+  60657: "Lakeview",
+  60618: "Roscoe Village",
 };
 
 const NEIGHBORHOOD_ALIASES = {
@@ -76,10 +88,17 @@ function matchNeighborhood(text) {
   return null;
 }
 
+function matchZip(text) {
+  const zip = clean(text)?.match(/\b(60614|60657|60618)\b/);
+  return zip ? ZIP_NEIGHBORHOODS[zip[1]] : null;
+}
+
 export function inferNeighborhood(libraryName, location) {
   return (
     matchNeighborhood(libraryName) ||
     matchNeighborhood(location) ||
+    matchZip(libraryName) ||
+    matchZip(location) ||
     null
   );
 }

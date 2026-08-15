@@ -23,6 +23,10 @@ npm run ingest:cpl -- --promote
 npm run ingest:cpd -- --dry-run
 npm run ingest:cpd -- --promote
 
+# Local neighborhood sites (LV/RV calendar, Green City Market, Roscoe Books)
+npm run ingest:local -- --dry-run
+npm run ingest:local -- --promote
+
 # Activities spreadsheet
 npm run import:activities -- --dry-run
 npm run import:activities -- --promote
@@ -64,6 +68,17 @@ npm run ingest:cpd -- --promote
 ```
 
 The same daily GitHub Action also runs this source after CPL.
+
+### Local neighborhood ingest
+
+Kid-relevant listings from the [Lakeview Roscoe Village events calendar](https://www.lakeviewroscoevillage.org/events-calendar), plus remaining **Green City Market Lincoln Park** (Wed/Sat through Nov 21) and **Roscoe Books** Thursday story times (skip July–August). Chamber networking, ticketed nights, and Instagram-only calendars are skipped. Ids are `local:<source>:<slug>:<date>`.
+
+```bash
+npm run ingest:local -- --dry-run
+npm run ingest:local -- --promote
+```
+
+The same daily GitHub Action runs this after CPL and Park District.
 
 ## Analytics (Vercel)
 

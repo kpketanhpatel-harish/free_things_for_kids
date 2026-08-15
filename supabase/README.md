@@ -71,6 +71,23 @@ Promotion rules:
 - Target neighborhoods → `published`
 - Activity ids are `cpd:<activity_id>`
 
+## Local neighborhood ingest
+
+No extra SQL. Uses the existing `staging_activities` and `activities` tables.
+
+```bash
+npm run ingest:local -- --dry-run
+npm run ingest:local -- --promote
+```
+
+Promotion rules:
+
+- Lakeview/Roscoe Village Chamber calendar events that look kid/family (markets, fests, Halloween, story-adjacent community events)
+- Generated remaining Green City Market Lincoln Park dates and Roscoe Books Thursdays
+- Skip adult networking, ticketed events, and Instagram-only sources
+- Target neighborhoods → `published`
+- Activity ids are `local:<source>:<slug>:<date>` and do not replace spreadsheet, CPL, or Park District ids
+
 ## Kids eat free / restaurant offers import
 
 Run in order in the SQL Editor:
