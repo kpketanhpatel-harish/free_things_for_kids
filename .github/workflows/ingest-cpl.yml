@@ -1,4 +1,4 @@
-name: Ingest CPL events
+name: Ingest neighborhood activities
 
 on:
   schedule:
@@ -31,3 +31,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SOCRATA_APP_TOKEN: ${{ secrets.SOCRATA_APP_TOKEN }}
         run: node scripts/ingest.mjs --source cpl --promote
+
+      - name: Ingest Chicago Park District events
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SOCRATA_APP_TOKEN: ${{ secrets.SOCRATA_APP_TOKEN }}
+        run: node scripts/ingest.mjs --source cpd --promote

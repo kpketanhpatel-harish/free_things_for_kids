@@ -19,6 +19,10 @@ Sheet imports stage raw rows, then optionally promote normalized rows into app t
 npm run ingest:cpl -- --dry-run
 npm run ingest:cpl -- --promote
 
+# Chicago Park District (Wrightwood, Hamlin, Trebes, Gill, Donahue)
+npm run ingest:cpd -- --dry-run
+npm run ingest:cpd -- --promote
+
 # Activities spreadsheet
 npm run import:activities -- --dry-run
 npm run import:activities -- --promote
@@ -49,6 +53,17 @@ A GitHub Action (`.github/workflows/ingest-cpl.yml`) runs this daily and on dema
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 Optional: `SOCRATA_APP_TOKEN` if the public dataset starts rate-limiting.
+
+### Chicago Park District ingest
+
+Free events and kid programs at **Wrightwood**, **Hamlin (Hannibal)**, **Trebes (Robert)**, **Gill (Joseph)**, and **Donahue (Margaret)** come from the [Chicago Data Portal Park District activities dataset](https://data.cityofchicago.org/d/tn7v-6rnw). Paid programs, adult-only ages, and PG-13/R movies are skipped. Ids are `cpd:<activity_id>`.
+
+```bash
+npm run ingest:cpd -- --dry-run
+npm run ingest:cpd -- --promote
+```
+
+The same daily GitHub Action also runs this source after CPL.
 
 ## Analytics (Vercel)
 

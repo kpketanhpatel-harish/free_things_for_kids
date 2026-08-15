@@ -3,15 +3,17 @@
  *
  * Usage:
  *   node scripts/ingest.mjs --source cpl --dry-run
- *   node scripts/ingest.mjs --source cpl
- *   node scripts/ingest.mjs --source cpl --promote
+ *   node scripts/ingest.mjs --source cpd --dry-run
+ *   node scripts/ingest.mjs --source cpd --promote
  */
 
 import { createClient } from "@supabase/supabase-js";
 import { loadEnv } from "./lib/env.mjs";
 import { normalizeCplEvent } from "./lib/normalizeCplEvent.mjs";
+import { normalizeCpdActivity } from "./lib/normalizeCpdActivity.mjs";
 import { promoteActivities } from "./lib/promoteActivities.mjs";
 import { fetchCplEvents } from "./sources/cpl.mjs";
+import { fetchCpdActivities } from "./sources/cpd.mjs";
 
 const SOURCES = {
   cpl: {
@@ -22,6 +24,17 @@ const SOURCES = {
       });
       console.log(`Fetched ${events.length} CPL events`);
       return events.map((event) => normalizeCplEvent(event));
+    },
+  },
+  cpd: {
+    description:
+      "Chicago Park District free events (Wrightwood, Hamlin, Trebes, Gill, Donahue)",
+    async load() {
+      const rows = await fetchCpdActivities({
+        appToken: process.env.SOCRATA_APP_TOKEN,
+      });
+      console.log(`Fetched ${rows.length} Park District rows`);
+      return rows.map((row) => normalizeCpdActivity(row));
     },
   },
 };

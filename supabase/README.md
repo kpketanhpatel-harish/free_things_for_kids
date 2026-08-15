@@ -55,6 +55,22 @@ Promotion rules:
 - Target neighborhoods → `published`; anything else usable → `draft`
 - Activity ids are `cpl:<event_id>` and do not replace spreadsheet row ids
 
+## Chicago Park District ingest
+
+No extra SQL. Uses the existing `staging_activities` and `activities` tables.
+
+```bash
+npm run ingest:cpd -- --dry-run
+npm run ingest:cpd -- --promote
+```
+
+Promotion rules:
+
+- Free (`fee = 0`) events/programs at Wrightwood, Hamlin, Trebes, Gill, and Donahue
+- Kid ages (All Ages, Early Childhood, Youth) or family events; skip Adult/Senior/Teen and PG-13/R movies
+- Target neighborhoods → `published`
+- Activity ids are `cpd:<activity_id>`
+
 ## Kids eat free / restaurant offers import
 
 Run in order in the SQL Editor:
