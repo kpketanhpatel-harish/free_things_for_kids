@@ -19,6 +19,13 @@ export default async function ConstructionSitesPage() {
   return (
     <main className="bg-amber-50/40">
       <section className="mx-auto max-w-6xl px-4 py-12">
+        <p
+          role="note"
+          className="mb-8 rounded-2xl border-2 border-amber-300 bg-amber-100 px-6 py-5 text-center text-2xl font-bold text-amber-950 md:text-3xl"
+        >
+          More sites coming soon
+        </p>
+
         <div className="mb-8">
           <p className="font-medium text-amber-800">
             The Free Kid List Chicago
