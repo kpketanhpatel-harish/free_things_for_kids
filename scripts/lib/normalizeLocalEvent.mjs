@@ -229,3 +229,80 @@ export function generateRoscoeBooksStoryTime(now = new Date()) {
     }),
   );
 }
+
+const TASTE_OF_LINCOLN_DAYS = [
+  { date: "2026-07-24", startTime: "16:00", endTime: "22:00" },
+  { date: "2026-07-25", startTime: "12:00", endTime: "22:00" },
+  { date: "2026-07-26", startTime: "12:00", endTime: "20:00" },
+];
+
+export function generateTasteOfLincoln(_now = new Date()) {
+  return TASTE_OF_LINCOLN_DAYS.map((day) =>
+    toActivity({
+      source: "taste-of-lincoln",
+      slug: "festival",
+      title: "Taste of Lincoln Avenue",
+      date: day.date,
+      startTime: day.startTime,
+      endTime: day.endTime,
+      venue: "Taste of Lincoln Avenue",
+      address: "2500 N Lincoln Ave, Chicago, IL 60614",
+      sourceUrl: "https://tasteoflincolnchicago.com/",
+      description:
+        "$10 suggested donation at the gate. Kids carnival with inflatables and games is free to enter (Fri 4–6 PM, Sat–Sun noon–6 PM). Some carnival games and food cost extra.",
+      ageGroup: "All ages",
+      sourceName: "Wrightwood Neighbors Association",
+    }),
+  );
+}
+
+export function generateThreeAvenuesStoryTime(now = new Date()) {
+  const today = chicagoToday(now);
+  const year = Number(today.slice(0, 4));
+  const seasonEnd = `${year + 1}-06-30`;
+
+  return weekdayDates(today, seasonEnd, [6]).map((date) =>
+    toActivity({
+      source: "three-avenues",
+      slug: "story-time",
+      title: "Three Avenues Story Time",
+      date,
+      startTime: "10:00",
+      endTime: null,
+      venue: "Three Avenues Bookshop",
+      address: "3009 N Southport Ave, Chicago, IL 60657",
+      sourceUrl: "https://www.threeavenuesbookshop.com/",
+      description:
+        "Weekly Saturday story time at 10:00 AM for toddlers and preschoolers, with stories, bubbles, and activities. Check the bookshop website if a week is cancelled.",
+      ageGroup: "Toddlers and preschoolers",
+      sourceName: "Three Avenues Bookshop",
+    }),
+  );
+}
+
+export function generateLincolnParkFarmersMarket(now = new Date()) {
+  const today = chicagoToday(now);
+  const year = Number(today.slice(0, 4));
+  const seasonStart = `${year}-04-25`;
+  const seasonEnd = `${year}-11-21`;
+  if (today > seasonEnd) return [];
+
+  const start = maxYmd(today, seasonStart);
+  return weekdayDates(start, seasonEnd, [6]).map((date) =>
+    toActivity({
+      source: "lp-farmers-market",
+      slug: "market",
+      title: "Lincoln Park Farmers Market",
+      date,
+      startTime: "07:00",
+      endTime: "13:00",
+      venue: "Lincoln Park Farmers Market",
+      address: "Armitage & Orchard (Lincoln Park High School), Chicago, IL 60614",
+      sourceUrl: "https://www.instagram.com/thelincolnparkfarmersmarket/",
+      description:
+        "Saturday farmers market 7:00 AM–1:00 PM through November 21, west of Lincoln Park High School. Enter at Armitage and Orchard. See Instagram for weekly vendor updates.",
+      ageGroup: "All ages",
+      sourceName: "Lincoln Park Farmers Market",
+    }),
+  );
+}

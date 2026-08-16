@@ -41,7 +41,7 @@ const SOURCES = {
   },
   local: {
     description:
-      "Lakeview/Roscoe Village calendar, Green City Market Lincoln Park, Roscoe Books story time",
+      "Lakeview/Roscoe Village calendar plus neighborhood markets, bookstores, and Taste of Lincoln",
     async load() {
       const normalized = await loadLocalActivities();
       console.log(`Built ${normalized.length} local source rows`);

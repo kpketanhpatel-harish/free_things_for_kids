@@ -5,7 +5,10 @@ import { parseLrvCalendarHtml } from "../scripts/lib/parseLrvCalendar.mjs";
 import { inferNeighborhood } from "../scripts/lib/normalizeActivity.mjs";
 import {
   generateGreenCityMarketLincoln,
+  generateLincolnParkFarmersMarket,
   generateRoscoeBooksStoryTime,
+  generateTasteOfLincoln,
+  generateThreeAvenuesStoryTime,
   isKidFriendlyLocalEvent,
   isPaidLocalEvent,
   localActivityId,
@@ -156,6 +159,52 @@ describe("recurring local sources", () => {
     );
     assert.equal(rows[0].activity.neighborhood, "Roscoe Village");
     assert.equal(inferNeighborhood("Roscoe Books", "2142 W Roscoe St"), "Roscoe Village");
+  });
+
+  it("includes Taste of Lincoln Avenue with the suggested-donation note", () => {
+    const rows = generateTasteOfLincoln(new Date("2026-08-16T12:00:00Z"));
+    assert.equal(rows.length, 3);
+    assert.deepEqual(
+      rows.map((row) => row.activity.date),
+      ["2026-07-24", "2026-07-25", "2026-07-26"],
+    );
+    assert.equal(rows[0].activity.neighborhood, "Lincoln Park");
+    assert.equal(rows[0].activity.status, "published");
+    assert.match(rows[0].activity.summary, /\$10 suggested donation/);
+    assert.equal(rows[0].activity.source_url, "https://tasteoflincolnchicago.com/");
+    assert.equal(
+      rows[0].activity.id,
+      localActivityId("taste-of-lincoln", "festival", "2026-07-24"),
+    );
+  });
+
+  it("generates Saturday 10 AM Three Avenues story times", () => {
+    const rows = generateThreeAvenuesStoryTime(new Date("2026-08-16T12:00:00Z"));
+    assert.equal(rows[0].activity.date, "2026-08-22");
+    assert.equal(rows[0].activity.start_time, "10:00");
+    assert.equal(rows[0].activity.neighborhood, "Lakeview");
+    assert.equal(
+      rows[0].activity.source_url,
+      "https://www.threeavenuesbookshop.com/",
+    );
+    const days = new Set(
+      rows.map((row) => new Date(`${row.activity.date}T00:00:00Z`).getUTCDay()),
+    );
+    assert.deepEqual([...days], [6]);
+  });
+
+  it("generates remaining Lincoln Park Farmers Market Saturdays with Instagram", () => {
+    const rows = generateLincolnParkFarmersMarket(
+      new Date("2026-08-16T12:00:00Z"),
+    );
+    assert.equal(rows[0].activity.date, "2026-08-22");
+    assert.equal(rows.at(-1).activity.date, "2026-11-21");
+    assert.equal(rows[0].activity.neighborhood, "Lincoln Park");
+    assert.equal(
+      rows[0].activity.source_url,
+      "https://www.instagram.com/thelincolnparkfarmersmarket/",
+    );
+    assert.match(rows[0].activity.summary, /Instagram/);
   });
 });
 

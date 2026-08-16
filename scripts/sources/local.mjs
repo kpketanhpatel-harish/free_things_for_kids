@@ -2,7 +2,10 @@ import { upcomingMonthKeys } from "../lib/chicagoDates.mjs";
 import { parseLrvCalendarHtml } from "../lib/parseLrvCalendar.mjs";
 import {
   generateGreenCityMarketLincoln,
+  generateLincolnParkFarmersMarket,
   generateRoscoeBooksStoryTime,
+  generateTasteOfLincoln,
+  generateThreeAvenuesStoryTime,
   normalizeLrvEvent,
 } from "../lib/normalizeLocalEvent.mjs";
 
@@ -60,5 +63,8 @@ export async function loadLocalActivities({ now = new Date() } = {}) {
   const normalized = calendarEvents.map((event) => normalizeLrvEvent(event));
   normalized.push(...generateGreenCityMarketLincoln(now));
   normalized.push(...generateRoscoeBooksStoryTime(now));
+  normalized.push(...generateTasteOfLincoln(now));
+  normalized.push(...generateThreeAvenuesStoryTime(now));
+  normalized.push(...generateLincolnParkFarmersMarket(now));
   return normalized;
 }

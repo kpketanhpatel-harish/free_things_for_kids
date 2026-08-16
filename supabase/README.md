@@ -83,8 +83,8 @@ npm run ingest:local -- --promote
 Promotion rules:
 
 - Lakeview/Roscoe Village Chamber calendar events that look kid/family (markets, fests, Halloween, story-adjacent community events)
-- Generated remaining Green City Market Lincoln Park dates and Roscoe Books Thursdays
-- Skip adult networking, ticketed events, and Instagram-only sources
+- Generated remaining Green City Market Lincoln Park dates, Lincoln Park Farmers Market Saturdays, Roscoe Books Thursdays, Three Avenues Saturdays, and Taste of Lincoln Avenue (suggested donation)
+- Skip adult networking and ticketed events; Instagram is used only as a source link, not scraped
 - Target neighborhoods → `published`
 - Activity ids are `local:<source>:<slug>:<date>` and do not replace spreadsheet, CPL, or Park District ids
 

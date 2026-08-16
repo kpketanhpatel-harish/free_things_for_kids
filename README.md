@@ -71,7 +71,7 @@ The same daily GitHub Action also runs this source after CPL.
 
 ### Local neighborhood ingest
 
-Kid-relevant listings from the [Lakeview Roscoe Village events calendar](https://www.lakeviewroscoevillage.org/events-calendar), plus remaining **Green City Market Lincoln Park** (Wed/Sat through Nov 21) and **Roscoe Books** Thursday story times (skip July–August). Chamber networking, ticketed nights, and Instagram-only calendars are skipped. Ids are `local:<source>:<slug>:<date>`.
+Kid-relevant listings from the [Lakeview Roscoe Village events calendar](https://www.lakeviewroscoevillage.org/events-calendar), plus remaining **Green City Market Lincoln Park** (Wed/Sat through Nov 21), **Lincoln Park Farmers Market** Saturdays (Instagram for weekly updates), **Roscoe Books** Thursday story times (skip July–August), **Three Avenues** Saturday 10:00 AM story times, and **Taste of Lincoln Avenue** ($10 suggested donation). Chamber networking and ticketed nights are skipped. Ids are `local:<source>:<slug>:<date>`.
 
 ```bash
 npm run ingest:local -- --dry-run
