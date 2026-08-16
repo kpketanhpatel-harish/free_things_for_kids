@@ -31,6 +31,15 @@ export default function Footer() {
 
               <li>
                 <Link
+                  href="/calendar"
+                  className="text-sm transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+                >
+                  Calendar
+                </Link>
+              </li>
+
+              <li>
+                <Link
                   href="/kids-eat-free"
                   className="text-sm transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
                 >

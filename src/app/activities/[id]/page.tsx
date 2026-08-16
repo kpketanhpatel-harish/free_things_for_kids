@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AddToCalendarButton from "@/components/AddToCalendarButton";
 import { getActivityById } from "@/lib/activities";
 import { decodeActivityId } from "@/lib/activityPath";
 import { formatActivityDate } from "@/lib/formatActivityDate";
@@ -90,7 +91,9 @@ export default async function ActivityDetailPage({
             </div>
           </dl>
 
-          <div className="mt-8">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <AddToCalendarButton activity={activity} />
+
             <a
               href={activity.sourceUrl}
               target="_blank"

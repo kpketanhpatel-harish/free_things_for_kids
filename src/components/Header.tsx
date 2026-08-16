@@ -15,6 +15,10 @@ const navigationItems: NavigationItem[] = [
     href: "/activities",
   },
   {
+    label: "Calendar",
+    href: "/calendar",
+  },
+  {
     label: "Kids Eat Free",
     href: "/kids-eat-free",
   },

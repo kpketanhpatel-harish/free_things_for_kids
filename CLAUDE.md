@@ -117,7 +117,9 @@ Low-Line Market and RV Farmers Market come from the Chamber calendar, not separa
 
 Never reuse sheet-style hashes for new feeds. Upserts are idempotent: re-running updates the same rows.
 
-Detail URLs must encode ids: `/activities/${encodeURIComponent(id)}`. Raw colons in the path (`/activities/local:lrvcc:...`) 404 on Vercel. `getActivities()` also collapses same-date near-duplicate titles (sheet vs ingest) and prefers `cpl:` / `cpd:` / `local:` ids. After `--promote`, colliding extras are **drafted** (not deleted).
+Detail URLs must encode ids: `/activities/${encodeURIComponent(id)}` via `getActivityHref(activity)`. Raw colons in the path (`/activities/local:lrvcc:...`) 404 on Vercel. `getActivities()` collapses same-date near-duplicate titles and prefers ingest ids. After `--promote`, colliding extras are drafted (not deleted).
+
+The `/calendar` page is another view of the same `activities` rows (`?month=2026-08`). Pills use `getActivityHref`. Recurrence is already expanded as one row per date; there is no RRULE field.
 
 Standalone cleanup:
 

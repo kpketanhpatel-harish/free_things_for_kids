@@ -37,14 +37,23 @@ function mapActivity(row: ActivityRow): Activity {
   };
 }
 
+const ACTIVITY_COLUMNS =
+  "id, title, summary, icon, date, start_time, end_time, venue, address, neighborhood, age_group, registration_required, source_url";
+
+function sortActivities(rows: Activity[]): Activity[] {
+  return [...rows].sort((a, b) => {
+    const byDate = a.date.localeCompare(b.date);
+    if (byDate !== 0) return byDate;
+    return (a.startTime ?? "").localeCompare(b.startTime ?? "");
+  });
+}
+
 export async function getActivities(): Promise<Activity[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("activities")
-    .select(
-      "id, title, summary, icon, date, start_time, end_time, venue, address, neighborhood, age_group, registration_required, source_url",
-    )
+    .select(ACTIVITY_COLUMNS)
     .order("date", { ascending: true })
     .order("start_time", { ascending: true });
 
@@ -52,13 +61,36 @@ export async function getActivities(): Promise<Activity[]> {
     throw new Error(`Failed to load activities: ${error.message}`);
   }
 
-  return dedupeActivitiesByEvent(
-    (data ?? []).map((row) => mapActivity(row as ActivityRow)),
-  ).sort((a, b) => {
-    const byDate = a.date.localeCompare(b.date);
-    if (byDate !== 0) return byDate;
-    return (a.startTime ?? "").localeCompare(b.startTime ?? "");
-  });
+  return sortActivities(
+    dedupeActivitiesByEvent(
+      (data ?? []).map((row) => mapActivity(row as ActivityRow)),
+    ),
+  );
+}
+
+export async function getActivitiesInRange(
+  startDate: string,
+  endDate: string,
+): Promise<Activity[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("activities")
+    .select(ACTIVITY_COLUMNS)
+    .gte("date", startDate)
+    .lte("date", endDate)
+    .order("date", { ascending: true })
+    .order("start_time", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load calendar activities: ${error.message}`);
+  }
+
+  return sortActivities(
+    dedupeActivitiesByEvent(
+      (data ?? []).map((row) => mapActivity(row as ActivityRow)),
+    ),
+  );
 }
 
 export async function getActivityById(id: string): Promise<Activity | null> {
@@ -67,9 +99,7 @@ export async function getActivityById(id: string): Promise<Activity | null> {
 
   const { data, error } = await supabase
     .from("activities")
-    .select(
-      "id, title, summary, icon, date, start_time, end_time, venue, address, neighborhood, age_group, registration_required, source_url",
-    )
+    .select(ACTIVITY_COLUMNS)
     .eq("id", decodedId)
     .maybeSingle();
 
