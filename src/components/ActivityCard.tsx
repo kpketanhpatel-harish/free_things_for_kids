@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AddToCalendarButton from "@/components/AddToCalendarButton";
 import type { Activity } from "@/types";
+import { activityDetailPath } from "@/lib/activityPath";
 import { formatActivityDate } from "@/lib/formatActivityDate";
 
 type ActivityCardProps = {
@@ -79,7 +80,7 @@ export default function ActivityCard({
     return (
       <li className="w-full">
         <Link
-          href={`/activities/${activity.id}`}
+          href={activityDetailPath(activity.id)}
           title={locationLabel(activity)}
           className="flex w-full items-center rounded-md border border-sky-100 bg-white px-2.5 py-1 text-sm font-medium text-gray-900 shadow-sm transition hover:border-blue-300 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
@@ -126,7 +127,7 @@ export default function ActivityCard({
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <Link
-            href={`/activities/${activity.id}`}
+            href={activityDetailPath(activity.id)}
             className="inline-flex rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             View Details
@@ -162,7 +163,7 @@ export default function ActivityCard({
 
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <Link
-          href={`/activities/${activity.id}`}
+          href={activityDetailPath(activity.id)}
           className="inline-flex rounded-lg bg-blue-700 px-4 py-2 font-medium text-white transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           View Details

@@ -134,5 +134,5 @@ export function generateActivityIcs(activity: Activity): string {
 }
 
 export function getActivityIcsFilename(activity: Activity): string {
-  return `${activity.id}.ics`;
+  return `${activity.id.replaceAll(":", "-")}.ics`;
 }

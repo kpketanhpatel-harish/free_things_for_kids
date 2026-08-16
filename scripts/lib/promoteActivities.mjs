@@ -1,3 +1,5 @@
+import { collidingActivityIds } from "./dedupeByEvent.mjs";
+
 export function chunk(items, size) {
   const groups = [];
   for (let i = 0; i < items.length; i += size) {
@@ -151,6 +153,47 @@ export async function promoteActivities({
   console.log(
     `Upserted ${activitiesUpserted} activities (${publishable} published, ${draft} draft)`,
   );
+
+  const { drafted } = await draftCollidingPublishedActivities(supabase);
+  if (drafted > 0) {
+    console.log(
+      `Drafted ${drafted} duplicate activities (same date + event; ingest ids kept)`,
+    );
+  }
+
   console.log("Done.");
   return { stagingRows, publishable, draft };
+}
+
+export async function draftCollidingPublishedActivities(supabase) {
+  const { data, error } = await supabase
+    .from("activities")
+    .select(
+      "id, title, date, venue, start_time, address, neighborhood, status",
+    )
+    .eq("status", "published");
+
+  if (error) {
+    throw new Error(`Failed to read activities for dedupe: ${error.message}`);
+  }
+
+  const loserIds = collidingActivityIds(data ?? []);
+  if (loserIds.length === 0) {
+    return { drafted: 0, loserIds };
+  }
+
+  for (const group of chunk(loserIds, 100)) {
+    const { error: updateError } = await supabase
+      .from("activities")
+      .update({ status: "draft" })
+      .in("id", group);
+
+    if (updateError) {
+      throw new Error(
+        `Failed to draft duplicate activities: ${updateError.message}`,
+      );
+    }
+  }
+
+  return { drafted: loserIds.length, loserIds };
 }

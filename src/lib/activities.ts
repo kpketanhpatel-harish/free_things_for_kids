@@ -1,3 +1,5 @@
+import { decodeActivityId } from "@/lib/activityPath";
+import { dedupeActivitiesByEvent } from "@/lib/dedupeActivities";
 import { createClient } from "@/lib/supabase/server";
 import type { Activity } from "@/types";
 
@@ -50,18 +52,25 @@ export async function getActivities(): Promise<Activity[]> {
     throw new Error(`Failed to load activities: ${error.message}`);
   }
 
-  return (data ?? []).map((row) => mapActivity(row as ActivityRow));
+  return dedupeActivitiesByEvent(
+    (data ?? []).map((row) => mapActivity(row as ActivityRow)),
+  ).sort((a, b) => {
+    const byDate = a.date.localeCompare(b.date);
+    if (byDate !== 0) return byDate;
+    return (a.startTime ?? "").localeCompare(b.startTime ?? "");
+  });
 }
 
 export async function getActivityById(id: string): Promise<Activity | null> {
   const supabase = await createClient();
+  const decodedId = decodeActivityId(id);
 
   const { data, error } = await supabase
     .from("activities")
     .select(
       "id, title, summary, icon, date, start_time, end_time, venue, address, neighborhood, age_group, registration_required, source_url",
     )
-    .eq("id", id)
+    .eq("id", decodedId)
     .maybeSingle();
 
   if (error) {

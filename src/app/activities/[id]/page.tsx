@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getActivityById } from "@/lib/activities";
+import { decodeActivityId } from "@/lib/activityPath";
 import { formatActivityDate } from "@/lib/formatActivityDate";
 
 type ActivityDetailPageProps = {
@@ -10,8 +11,8 @@ type ActivityDetailPageProps = {
 export default async function ActivityDetailPage({
   params,
 }: ActivityDetailPageProps) {
-  const { id } = await params;
-  const activity = await getActivityById(id);
+  const { id: rawId } = await params;
+  const activity = await getActivityById(decodeActivityId(rawId));
 
   if (!activity) {
     notFound();

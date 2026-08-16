@@ -88,6 +88,13 @@ Promotion rules:
 - Target neighborhoods → `published`
 - Activity ids are `local:<source>:<slug>:<date>` and do not replace spreadsheet, CPL, or Park District ids
 
+Duplicate same-day events from the sheet and ingest are collapsed in the app and **drafted** (not deleted) after `--promote`. To clean existing rows without a full ingest:
+
+```bash
+npm run cleanup:duplicate-activities -- --dry-run
+npm run cleanup:duplicate-activities
+```
+
 ## Kids eat free / restaurant offers import
 
 Run in order in the SQL Editor:

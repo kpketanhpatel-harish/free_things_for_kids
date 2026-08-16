@@ -117,6 +117,15 @@ Low-Line Market and RV Farmers Market come from the Chamber calendar, not separa
 
 Never reuse sheet-style hashes for new feeds. Upserts are idempotent: re-running updates the same rows.
 
+Detail URLs must encode ids: `/activities/${encodeURIComponent(id)}`. Raw colons in the path (`/activities/local:lrvcc:...`) 404 on Vercel. `getActivities()` also collapses same-date near-duplicate titles (sheet vs ingest) and prefers `cpl:` / `cpd:` / `local:` ids. After `--promote`, colliding extras are **drafted** (not deleted).
+
+Standalone cleanup:
+
+```bash
+npm run cleanup:duplicate-activities -- --dry-run
+npm run cleanup:duplicate-activities
+```
+
 ## Neighborhood inference
 
 `scripts/lib/normalizeActivity.mjs`:
