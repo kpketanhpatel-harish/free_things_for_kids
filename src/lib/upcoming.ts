@@ -1,57 +1,21 @@
 import type { Activity, DayOfWeek, RestaurantOffer } from "@/types";
-
-const DAY_NAMES = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-] as const;
+import {
+  activityMatchesFilters,
+  type DiscoveryFilters,
+} from "@/lib/activityFacets";
+import {
+  chicagoTodayYmd,
+  datesForIntent,
+  hasActivityEnded,
+  weekdayNamesForDates,
+  type DateIntent,
+} from "@/lib/chicagoTime";
 
 export type HomeQuickList = {
   title: string;
   emptyMessage: string;
   activities: Activity[];
 };
-
-export type HomeQuickLists = {
-  primary: HomeQuickList;
-  secondary: HomeQuickList;
-};
-
-function formatDateKey(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function startOfToday(): Date {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return today;
-}
-
-function addDays(date: Date, days: number): Date {
-  const next = new Date(date);
-  next.setDate(date.getDate() + days);
-  return next;
-}
-
-function getTodayAndTomorrow(): { today: Date; tomorrow: Date } {
-  const today = startOfToday();
-  return { today, tomorrow: addDays(today, 1) };
-}
-
-/** Upcoming Sat + Sun relative to `from` (never includes a Saturday already in the past). */
-function getUpcomingWeekendDates(from: Date = startOfToday()): Date[] {
-  const day = from.getDay(); // 0 = Sunday … 6 = Saturday
-  const daysUntilSaturday = day === 0 ? 6 : 6 - day;
-  const saturday = addDays(from, daysUntilSaturday);
-  return [saturday, addDays(saturday, 1)];
-}
 
 function compareActivities(a: Activity, b: Activity): number {
   const byDate = a.date.localeCompare(b.date);
@@ -68,98 +32,67 @@ function compareActivities(a: Activity, b: Activity): number {
   return a.title.localeCompare(b.title);
 }
 
-function filterActivitiesByDates(
+export function filterActiveActivities(
   allActivities: Activity[],
-  dates: Set<string>,
-  limit: number,
+  now = new Date(),
 ): Activity[] {
-  return allActivities
-    .filter((activity) => dates.has(activity.date))
-    .sort(compareActivities)
-    .slice(0, limit);
+  return allActivities.filter((activity) => !hasActivityEnded(activity, now));
+}
+
+export function filterActivitiesByDates(
+  allActivities: Activity[],
+  dates: Iterable<string>,
+  now = new Date(),
+): Activity[] {
+  const dateSet = new Set(dates);
+  return filterActiveActivities(allActivities, now)
+    .filter((activity) => dateSet.has(activity.date))
+    .sort(compareActivities);
+}
+
+export function getActivitiesForIntent(
+  allActivities: Activity[],
+  intent: DateIntent,
+  now = new Date(),
+): Activity[] {
+  const today = chicagoTodayYmd(now);
+  return filterActivitiesByDates(
+    allActivities,
+    datesForIntent(intent, today),
+    now,
+  );
 }
 
 export function getTodaysActivities(
   allActivities: Activity[],
-  limit = 5,
+  limit = 8,
+  now = new Date(),
 ): Activity[] {
-  const today = startOfToday();
-  return filterActivitiesByDates(
-    allActivities,
-    new Set([formatDateKey(today)]),
-    limit,
-  );
+  return getActivitiesForIntent(allActivities, "today", now).slice(0, limit);
 }
 
-/**
- * Homepage top lists by weekday:
- * - Mon–Fri: Today | This weekend (upcoming Sat + Sun)
- * - Saturday: Today | Tomorrow (Sunday)
- * - Sunday: Today | Next weekend (following Sat + Sun)
- */
 export function getHomeQuickLists(
   allActivities: Activity[],
   limit = 5,
-): HomeQuickLists {
-  const today = startOfToday();
-  const day = today.getDay();
+  now = new Date(),
+): { primary: HomeQuickList; secondary: HomeQuickList } {
+  const today = getTodaysActivities(allActivities, limit, now);
+  const weekend = getActivitiesForIntent(
+    allActivities,
+    "weekend",
+    now,
+  ).slice(0, limit);
 
-  const primary: HomeQuickList = {
-    title: "Today",
-    emptyMessage: "Nothing free listed for today.",
-    activities: getTodaysActivities(allActivities, limit),
-  };
-
-  if (day === 6) {
-    // Saturday → Tomorrow (Sunday)
-    const tomorrow = addDays(today, 1);
-    return {
-      primary,
-      secondary: {
-        title: "Tomorrow",
-        emptyMessage: "Nothing free listed for tomorrow.",
-        activities: filterActivitiesByDates(
-          allActivities,
-          new Set([formatDateKey(tomorrow)]),
-          limit,
-        ),
-      },
-    };
-  }
-
-  if (day === 0) {
-    // Sunday → Next weekend
-    const nextWeekendDates = new Set(
-      getUpcomingWeekendDates(today).map((date) => formatDateKey(date)),
-    );
-    return {
-      primary,
-      secondary: {
-        title: "Next weekend",
-        emptyMessage: "Nothing free listed for next weekend.",
-        activities: filterActivitiesByDates(
-          allActivities,
-          nextWeekendDates,
-          limit,
-        ),
-      },
-    };
-  }
-
-  // Mon–Fri → This weekend
-  const thisWeekendDates = new Set(
-    getUpcomingWeekendDates(today).map((date) => formatDateKey(date)),
-  );
   return {
-    primary,
+    primary: {
+      title: "Today",
+      emptyMessage: "Nothing listed for today yet.",
+      activities: today,
+    },
     secondary: {
       title: "This weekend",
-      emptyMessage: "Nothing free listed for this weekend.",
-      activities: filterActivitiesByDates(
-        allActivities,
-        thisWeekendDates,
-        limit,
-      ),
+      emptyMessage: "Nothing listed for this weekend yet.",
+      activities: weekend,
     },
   };
 }
@@ -167,29 +100,42 @@ export function getHomeQuickLists(
 export function getUpcomingActivities(
   allActivities: Activity[],
   limit = 3,
+  now = new Date(),
 ): Activity[] {
-  const { today, tomorrow } = getTodayAndTomorrow();
-  const upcomingDates = new Set([
-    formatDateKey(today),
-    formatDateKey(tomorrow),
-  ]);
+  return filterActiveActivities(allActivities, now)
+    .sort(compareActivities)
+    .slice(0, limit);
+}
 
-  return filterActivitiesByDates(allActivities, upcomingDates, limit);
+export function offersForDates(
+  allOffers: RestaurantOffer[],
+  dates: string[],
+): RestaurantOffer[] {
+  const days = new Set<DayOfWeek>(weekdayNamesForDates(dates));
+  return allOffers.filter((offer) =>
+    offer.eligibleDays.some((day) => days.has(day)),
+  );
 }
 
 export function getUpcomingRestaurantOffers(
   allOffers: RestaurantOffer[],
   limit = 2,
+  now = new Date(),
 ): RestaurantOffer[] {
-  const { today, tomorrow } = getTodayAndTomorrow();
-  const upcomingDays = new Set<DayOfWeek>([
-    DAY_NAMES[today.getDay()],
-    DAY_NAMES[tomorrow.getDay()],
-  ]);
+  const today = chicagoTodayYmd(now);
+  return offersForDates(allOffers, datesForIntent("today", today)).slice(
+    0,
+    limit,
+  );
+}
 
-  return allOffers
-    .filter((offer) =>
-      offer.eligibleDays.some((day) => upcomingDays.has(day)),
-    )
-    .slice(0, limit);
+export function discoverActivities(
+  allActivities: Activity[],
+  intent: DateIntent,
+  filters: DiscoveryFilters,
+  now = new Date(),
+): Activity[] {
+  return getActivitiesForIntent(allActivities, intent, now).filter(
+    (activity) => activityMatchesFilters(activity, filters),
+  );
 }

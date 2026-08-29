@@ -1,4 +1,6 @@
+import VerificationBadge from "@/components/VerificationBadge";
 import type { ConstructionSite } from "@/types";
+import { formatListedDate } from "@/lib/formatActivityDate";
 
 type ConstructionSiteCardProps = {
   site: ConstructionSite;
@@ -78,6 +80,14 @@ export default function ConstructionSiteCard({
           </div>
         ) : null}
       </dl>
+
+      {site.lastChecked ? (
+        <div className="mt-3">
+          <VerificationBadge
+            label={`Last checked ${formatListedDate(site.lastChecked) ?? site.lastChecked}`}
+          />
+        </div>
+      ) : null}
 
       {site.sourceUrl ? (
         <a

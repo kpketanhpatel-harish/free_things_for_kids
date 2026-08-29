@@ -14,13 +14,18 @@ export function isIngestId(id: string): boolean {
   return /^(cpl|cpd|local):/.test(id);
 }
 
-export function activityDedupeKey(activity: Pick<Activity, "date" | "title" | "venue">): string {
+export function activityDedupeKey(
+  activity: Pick<Activity, "date" | "title" | "venue"> & {
+    startTime?: string;
+  },
+): string {
   const title = fingerprint(activity.title);
   const date = activity.date ?? "";
+  const start = activity.startTime ?? "";
   if (/\b(market|fest|festival|carnival|farmers)\b/.test(title)) {
     return `${date}|${title}`;
   }
-  return `${date}|${title}|${fingerprint(activity.venue)}`;
+  return `${date}|${title}|${fingerprint(activity.venue)}|${start}`;
 }
 
 function score(activity: Activity): number {

@@ -4,7 +4,8 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Why The Free Kid List exists: hyper-local free kids activities in Roscoe Village, Lakeview, and Lincoln Park.",
+    "Why The Free Kids List exists: hyper-local free kids activities in Roscoe Village, Lakeview, and Lincoln Park.",
+  alternates: { canonical: "/about" },
 };
 
 const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/jsbkNszA9i4";
@@ -19,7 +20,7 @@ export default function AboutPage() {
           </p>
 
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
-            The Free Kid List
+            The Free Kids List
           </h1>
 
           <p className="mt-4 text-2xl font-semibold leading-snug text-slate-800 md:text-3xl">
@@ -31,7 +32,7 @@ export default function AboutPage() {
             Park never show up where parents actually look. They live on one-off
             websites, volunteer flyers in store windows, and word of mouth.{" "}
             <span className="font-medium text-gray-900">
-              The Free Kid List
+              The Free Kids List
             </span>{" "}
             pulls those neighborhood gems into one place—so families can find
             what&apos;s happening nearby without digging.
@@ -44,7 +45,7 @@ export default function AboutPage() {
           <div className="relative aspect-video w-full">
             <iframe
               src={YOUTUBE_EMBED_URL}
-              title="Why I built The Free Kid List"
+              title="Why I built The Free Kids List"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className="absolute inset-0 h-full w-full border-0"

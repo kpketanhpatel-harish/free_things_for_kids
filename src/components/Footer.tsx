@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { SITE_NAME } from "@/lib/site";
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -7,13 +9,10 @@ export default function Footer() {
     <footer className="border-t border-gray-200 bg-gray-900 text-gray-300">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-2">
         <div>
-          <h2 className="font-semibold text-white">
-            Free Things for Kids Chicago
-          </h2>
-
+          <h2 className="font-semibold text-white">{SITE_NAME}</h2>
           <p className="mt-3 max-w-md text-sm leading-6 text-gray-400">
-            A local guide helping families discover free activities and
-            kids-eat-free restaurant offers in selected Chicago neighborhoods.
+            Free kids activities, neighborhood events, and kids-eat-free
+            deals in Lakeview, Roscoe Village, and Lincoln Park.
           </p>
         </div>
 
@@ -22,13 +21,12 @@ export default function Footer() {
             <ul className="flex flex-wrap gap-x-5 gap-y-2 md:justify-end">
               <li>
                 <Link
-                  href="/activities"
+                  href="/"
                   className="text-sm transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
                 >
-                  Free Activities
+                  Today
                 </Link>
               </li>
-
               <li>
                 <Link
                   href="/calendar"
@@ -37,7 +35,6 @@ export default function Footer() {
                   Calendar
                 </Link>
               </li>
-
               <li>
                 <Link
                   href="/kids-eat-free"
@@ -46,7 +43,14 @@ export default function Footer() {
                   Kids Eat Free
                 </Link>
               </li>
-
+              <li>
+                <Link
+                  href="/search"
+                  className="text-sm transition hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+                >
+                  Search
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/construction-sites"
@@ -55,7 +59,6 @@ export default function Footer() {
                   Construction Sites
                 </Link>
               </li>
-
               <li>
                 <Link
                   href="/about"
@@ -66,7 +69,6 @@ export default function Footer() {
               </li>
             </ul>
           </nav>
-
           <p className="mt-4 text-xs leading-5 text-gray-400">
             Restaurant promotions can change without notice. Confirm offers
             directly with the restaurant before visiting.
@@ -76,7 +78,7 @@ export default function Footer() {
 
       <div className="border-t border-gray-800">
         <div className="mx-auto max-w-6xl px-4 py-4 text-sm text-gray-500">
-          © {currentYear} Free Things for Kids Chicago
+          © {currentYear} {SITE_NAME}
         </div>
       </div>
     </footer>

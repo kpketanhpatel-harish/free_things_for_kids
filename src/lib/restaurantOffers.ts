@@ -15,6 +15,7 @@ type RestaurantOfferRow = {
   address: string | null;
   website: string | null;
   source_url: string | null;
+  created_at?: string | null;
 };
 
 function mapRestaurantOffer(row: RestaurantOfferRow): RestaurantOffer {
@@ -32,11 +33,12 @@ function mapRestaurantOffer(row: RestaurantOfferRow): RestaurantOffer {
     address: row.address ?? undefined,
     website: row.website ?? undefined,
     sourceUrl: row.source_url ?? undefined,
+    createdAt: row.created_at ?? undefined,
   };
 }
 
 const restaurantOfferSelect =
-  "id, restaurant_name, neighborhood, eligible_days, eligible_hours, offer_summary, adult_purchase_required, maximum_child_age, dine_in_only, confirmed, address, website, source_url";
+  "id, restaurant_name, neighborhood, eligible_days, eligible_hours, offer_summary, adult_purchase_required, maximum_child_age, dine_in_only, confirmed, address, website, source_url, created_at";
 
 export async function getRestaurantOffers(): Promise<RestaurantOffer[]> {
   const supabase = await createClient();

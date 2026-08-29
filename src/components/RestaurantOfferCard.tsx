@@ -1,4 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import FreeBadge from "@/components/FreeBadge";
+import VerificationBadge from "@/components/VerificationBadge";
+import { trackEvent } from "@/lib/analytics";
+import { formatListedDate } from "@/lib/formatActivityDate";
 import type { RestaurantOffer } from "@/types";
 
 type RestaurantOfferCardProps = {
@@ -6,180 +12,76 @@ type RestaurantOfferCardProps = {
   variant?: "default" | "upcoming";
 };
 
-function websiteHref(website: string): string {
-  if (/^https?:\/\//i.test(website)) {
-    return website;
-  }
-  return `https://${website}`;
-}
-
-function OfferLocationDetails({ offer }: { offer: RestaurantOffer }) {
-  return (
-    <>
-      {offer.address ? (
-        <div>
-          <dt className="inline font-semibold">Address: </dt>
-          <dd className="inline">{offer.address}</dd>
-        </div>
-      ) : null}
-
-      {offer.website ? (
-        <div>
-          <dt className="inline font-semibold">Website: </dt>
-          <dd className="inline">
-            <a
-              href={websiteHref(offer.website)}
-              target="_blank"
-              rel="noreferrer"
-              className="text-orange-700 underline-offset-2 hover:underline"
-            >
-              Visit website
-            </a>
-          </dd>
-        </div>
-      ) : null}
-    </>
-  );
+function ageLine(offer: RestaurantOffer): string {
+  return offer.maximumChildAge
+    ? `Kids ${offer.maximumChildAge} and under`
+    : "Kids meal age varies";
 }
 
 export default function RestaurantOfferCard({
   offer,
   variant = "default",
 }: RestaurantOfferCardProps) {
-  if (variant === "upcoming") {
-    return (
-      <article className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h2 className="text-lg font-semibold leading-snug text-gray-900">
-          {offer.restaurantName}
-        </h2>
+  const listed = formatListedDate(offer.createdAt);
+  const verifyLabel = offer.confirmed
+    ? listed
+      ? `Confirmed · Listed ${listed}`
+      : "Confirmed"
+    : listed
+      ? `Last checked ${listed}`
+      : "Confirm with the restaurant";
 
-        <p className="mt-1.5 line-clamp-2 text-sm text-gray-600">
-          {offer.offerSummary}
-        </p>
+  return (
+    <article>
+      <Link
+        href={`/kids-eat-free/${offer.id}`}
+        onClick={() =>
+          trackEvent("kids_eat_free_clicked", {
+            offer_id: offer.id,
+            source: variant,
+          })
+        }
+        className="block rounded-2xl border border-orange-100 bg-orange-50/60 p-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <h2 className="text-base font-semibold leading-snug text-gray-900">
+            {offer.restaurantName}
+          </h2>
+          <FreeBadge />
+        </div>
 
-        <dl className="mt-3 space-y-1 text-sm text-gray-700">
-          <OfferLocationDetails offer={offer} />
+        <p className="mt-1.5 text-sm text-gray-700">{offer.offerSummary}</p>
 
+        <dl className="mt-3 space-y-0.5 text-sm text-gray-700">
           <div>
-            <dt className="inline font-semibold">Available: </dt>
-            <dd className="inline">{offer.eligibleDays.join(", ")}</dd>
+            <dt className="sr-only">Neighborhood</dt>
+            <dd>{offer.neighborhood}</dd>
           </div>
-
           <div>
-            <dt className="inline font-semibold">Hours: </dt>
-            <dd className="inline">{offer.eligibleHours}</dd>
+            <dt className="sr-only">Offer time</dt>
+            <dd>{offer.eligibleHours}</dd>
           </div>
-
           <div>
-            <dt className="inline font-semibold">Adult purchase: </dt>
-            <dd className="inline">
-              {offer.adultPurchaseRequired ? "Required" : "Not required"}
-            </dd>
+            <dt className="sr-only">Eligible days</dt>
+            <dd>{offer.eligibleDays.join(", ")}</dd>
           </div>
-
           <div>
-            <dt className="inline font-semibold">Maximum child age: </dt>
-            <dd className="inline">
-              {offer.maximumChildAge
-                ? `${offer.maximumChildAge} years`
-                : "Not specified"}
+            <dt className="sr-only">Maximum child age</dt>
+            <dd>{ageLine(offer)}</dd>
+          </div>
+          <div>
+            <dt className="sr-only">Adult purchase</dt>
+            <dd>
+              {offer.adultPurchaseRequired
+                ? "Adult purchase required"
+                : "No adult purchase required"}
             </dd>
           </div>
         </dl>
 
-        <div className="mt-3 flex flex-wrap gap-2 text-xs">
-          <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-orange-800">
-            {offer.neighborhood}
-          </span>
-
-          <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-green-800">
-            Free
-          </span>
+        <div className="mt-3">
+          <VerificationBadge label={verifyLabel} />
         </div>
-
-        <Link
-          href={`/kids-eat-free/${offer.id}`}
-          className="mt-4 inline-flex rounded-lg bg-orange-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-        >
-          View Details
-        </Link>
-      </article>
-    );
-  }
-
-  return (
-    <article className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="mb-3 flex flex-wrap gap-2 text-sm">
-        <span className="rounded-full bg-orange-100 px-3 py-1 text-orange-800">
-          {offer.neighborhood}
-        </span>
-
-        <span
-          className={
-            offer.confirmed
-              ? "rounded-full bg-green-100 px-3 py-1 text-green-800"
-              : "rounded-full bg-yellow-100 px-3 py-1 text-yellow-800"
-          }
-        >
-          {offer.confirmed ? "Confirmed" : "Unconfirmed"}
-        </span>
-      </div>
-
-      <h2 className="text-xl font-semibold text-gray-900">
-        {offer.restaurantName}
-      </h2>
-
-      <p className="mt-2 text-gray-600">{offer.offerSummary}</p>
-
-      <dl className="mt-4 space-y-2 text-sm text-gray-700">
-        <OfferLocationDetails offer={offer} />
-
-        <div>
-          <dt className="inline font-semibold">Available: </dt>
-          <dd className="inline">{offer.eligibleDays.join(", ")}</dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Hours: </dt>
-          <dd className="inline">{offer.eligibleHours}</dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Adult purchase: </dt>
-          <dd className="inline">
-            {offer.adultPurchaseRequired ? "Required" : "Not required"}
-          </dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Maximum child age: </dt>
-          <dd className="inline">
-            {offer.maximumChildAge
-              ? `${offer.maximumChildAge} years`
-              : "Not specified"}
-          </dd>
-        </div>
-
-        <div>
-          <dt className="inline font-semibold">Dining option: </dt>
-          <dd className="inline">
-            {offer.dineInOnly ? "Dine-in only" : "Dine-in or takeaway"}
-          </dd>
-        </div>
-      </dl>
-
-      {!offer.confirmed && (
-        <p className="mt-5 rounded-lg bg-yellow-50 p-3 text-sm text-yellow-900">
-          This offer has not yet been confirmed. Please contact the restaurant
-          before visiting.
-        </p>
-      )}
-
-      <Link
-        href={`/kids-eat-free/${offer.id}`}
-        className="mt-5 inline-flex rounded-lg bg-orange-700 px-4 py-2 font-medium text-white transition hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-      >
-        View Details
       </Link>
     </article>
   );

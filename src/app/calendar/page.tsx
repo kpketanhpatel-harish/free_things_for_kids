@@ -1,15 +1,18 @@
+import type { Metadata } from "next";
 import MonthCalendar from "@/components/calendar/MonthCalendar";
 import { getActivitiesInRange } from "@/lib/activities";
 import {
   monthGridRange,
   parseMonthParam,
 } from "@/lib/calendarDisplay";
-import type { Metadata } from "next";
+import { SITE_AREA } from "@/lib/site";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Activity calendar",
-  description:
-    "Scan free kids activities in Lakeview, Roscoe Village, and Lincoln Park by month.",
+  description: `Scan free kids activities in ${SITE_AREA} by month or as a daily list.`,
+  alternates: { canonical: "/calendar" },
 };
 
 type CalendarPageProps = {

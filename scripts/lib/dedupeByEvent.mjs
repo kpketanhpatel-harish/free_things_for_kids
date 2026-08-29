@@ -15,10 +15,11 @@ export function isIngestId(id) {
 export function activityDedupeKey(activity) {
   const title = fingerprint(activity?.title);
   const date = activity?.date ?? "";
+  const start = activity?.startTime ?? activity?.start_time ?? "";
   if (/\b(market|fest|festival|carnival|farmers)\b/.test(title)) {
     return `${date}|${title}`;
   }
-  return `${date}|${title}|${fingerprint(activity?.venue)}`;
+  return `${date}|${title}|${fingerprint(activity?.venue)}|${start}`;
 }
 
 export function activityDedupeScore(activity) {

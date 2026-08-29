@@ -21,6 +21,8 @@ export type Activity = {
   ageGroup: string;
   registrationRequired: boolean;
   sourceUrl: string;
+  sourceName?: string;
+  createdAt?: string;
 };
 
 export type RestaurantOffer = {
@@ -37,6 +39,7 @@ export type RestaurantOffer = {
   address?: string;
   website?: string;
   sourceUrl?: string;
+  createdAt?: string;
 };
 
 export type ConstructionSite = {

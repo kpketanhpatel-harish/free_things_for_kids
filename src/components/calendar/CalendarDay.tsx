@@ -45,7 +45,7 @@ export default function CalendarDay({
 
   return (
     <div
-      className={`relative flex min-h-[7.5rem] flex-col border border-gray-200 bg-white p-1 md:min-h-[8.5rem] md:p-1.5 ${
+      className={`relative flex min-h-[4.5rem] flex-col border border-gray-200 bg-white p-1 md:min-h-[8.5rem] md:p-1.5 ${
         cell.inMonth ? "" : "bg-gray-50"
       } ${isSelected ? "ring-2 ring-blue-500 ring-inset" : ""}`}
     >

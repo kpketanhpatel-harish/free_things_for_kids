@@ -1,6 +1,9 @@
 import { decodeActivityId } from "@/lib/activityPath";
+import { isFamilyDiscoveryActivity } from "@/lib/activityFacets";
+import { chicagoTodayYmd, datesForIntent } from "@/lib/chicagoTime";
 import { dedupeActivitiesByEvent } from "@/lib/dedupeActivities";
 import { createClient } from "@/lib/supabase/server";
+import { filterActiveActivities } from "@/lib/upcoming";
 import type { Activity } from "@/types";
 
 type ActivityRow = {
@@ -17,6 +20,8 @@ type ActivityRow = {
   age_group: string | null;
   registration_required: boolean;
   source_url: string;
+  source_name?: string | null;
+  created_at?: string | null;
 };
 
 function mapActivity(row: ActivityRow): Activity {
@@ -25,7 +30,7 @@ function mapActivity(row: ActivityRow): Activity {
     title: row.title,
     summary: row.summary ?? "See the event page for full details.",
     icon: row.icon ?? "✨",
-    date: row.date,
+    date: String(row.date).slice(0, 10),
     startTime: row.start_time ?? undefined,
     endTime: row.end_time ?? undefined,
     venue: row.venue ?? "See event page",
@@ -34,11 +39,13 @@ function mapActivity(row: ActivityRow): Activity {
     ageGroup: row.age_group ?? "All ages",
     registrationRequired: row.registration_required,
     sourceUrl: row.source_url,
+    sourceName: row.source_name ?? undefined,
+    createdAt: row.created_at ?? undefined,
   };
 }
 
 const ACTIVITY_COLUMNS =
-  "id, title, summary, icon, date, start_time, end_time, venue, address, neighborhood, age_group, registration_required, source_url";
+  "id, title, summary, icon, date, start_time, end_time, venue, address, neighborhood, age_group, registration_required, source_url, created_at";
 
 function sortActivities(rows: Activity[]): Activity[] {
   return [...rows].sort((a, b) => {
@@ -46,6 +53,12 @@ function sortActivities(rows: Activity[]): Activity[] {
     if (byDate !== 0) return byDate;
     return (a.startTime ?? "").localeCompare(b.startTime ?? "");
   });
+}
+
+function mapAndDedupe(rows: ActivityRow[] | null): Activity[] {
+  return sortActivities(
+    dedupeActivitiesByEvent((rows ?? []).map((row) => mapActivity(row))),
+  );
 }
 
 export async function getActivities(): Promise<Activity[]> {
@@ -61,11 +74,42 @@ export async function getActivities(): Promise<Activity[]> {
     throw new Error(`Failed to load activities: ${error.message}`);
   }
 
-  return sortActivities(
-    dedupeActivitiesByEvent(
-      (data ?? []).map((row) => mapActivity(row as ActivityRow)),
-    ),
+  return mapAndDedupe(data as ActivityRow[] | null);
+}
+
+export async function getUpcomingPublishedActivities(
+  now = new Date(),
+): Promise<Activity[]> {
+  const supabase = await createClient();
+  const today = chicagoTodayYmd(now);
+
+  const { data, error } = await supabase
+    .from("activities")
+    .select(ACTIVITY_COLUMNS)
+    .gte("date", today)
+    .order("date", { ascending: true })
+    .order("start_time", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load activities: ${error.message}`);
+  }
+
+  return filterActiveActivities(mapAndDedupe(data as ActivityRow[] | null), now).filter(
+    isFamilyDiscoveryActivity,
   );
+}
+
+export async function getHomeDiscoveryActivities(
+  now = new Date(),
+): Promise<Activity[]> {
+  const all = await getUpcomingPublishedActivities(now);
+  const today = chicagoTodayYmd(now);
+  const dates = new Set([
+    ...datesForIntent("today", today),
+    ...datesForIntent("tomorrow", today),
+    ...datesForIntent("weekend", today),
+  ]);
+  return all.filter((activity) => dates.has(activity.date));
 }
 
 export async function getActivitiesInRange(
@@ -86,11 +130,7 @@ export async function getActivitiesInRange(
     throw new Error(`Failed to load calendar activities: ${error.message}`);
   }
 
-  return sortActivities(
-    dedupeActivitiesByEvent(
-      (data ?? []).map((row) => mapActivity(row as ActivityRow)),
-    ),
-  );
+  return mapAndDedupe(data as ActivityRow[] | null);
 }
 
 export async function getActivityById(id: string): Promise<Activity | null> {

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import RestaurantOfferCard from "@/components/RestaurantOfferCard";
+import EmptyState from "@/components/EmptyState";
+import { chicagoWeekdayIndex, DAY_NAMES } from "@/lib/chicagoTime";
 import type { DayOfWeek, RestaurantOffer } from "@/types";
 
 type RestaurantOfferListProps = {
@@ -22,7 +24,9 @@ export default function RestaurantOfferList({
   offers,
 }: RestaurantOfferListProps) {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("All");
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek | "All">("All");
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek | "All">(
+    DAY_NAMES[chicagoWeekdayIndex()],
+  );
   const [confirmedOnly, setConfirmedOnly] = useState(true);
 
   const neighborhoods = Array.from(
@@ -50,12 +54,12 @@ export default function RestaurantOfferList({
 
   const filtersAtDefault =
     selectedNeighborhood === "All" &&
-    selectedDay === "All" &&
+    selectedDay === DAY_NAMES[chicagoWeekdayIndex()] &&
     confirmedOnly === true;
 
   function clearFilters() {
     setSelectedNeighborhood("All");
-    setSelectedDay("All");
+    setSelectedDay(DAY_NAMES[chicagoWeekdayIndex()]);
     setConfirmedOnly(true);
   }
 
@@ -80,7 +84,7 @@ export default function RestaurantOfferList({
               onChange={(event) =>
                 setSelectedNeighborhood(event.target.value)
               }
-              className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
+              className="mt-2 min-h-11 w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
             >
               <option value="All">All neighborhoods</option>
               {neighborhoods.map((neighborhood) => (
@@ -104,7 +108,7 @@ export default function RestaurantOfferList({
               onChange={(event) =>
                 setSelectedDay(event.target.value as DayOfWeek | "All")
               }
-              className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
+              className="mt-2 min-h-11 w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-200"
             >
               <option value="All">All days</option>
               {eligibleDays.map((day) => (
@@ -144,27 +148,22 @@ export default function RestaurantOfferList({
           type="button"
           onClick={clearFilters}
           disabled={filtersAtDefault}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-200 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-11 rounded-lg border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-orange-200"
         >
           Clear filters
         </button>
       </div>
 
       {filteredOffers.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-          <p className="text-gray-600">
-            No restaurant offers match your selected filters.
-          </p>
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="mt-4 rounded-lg bg-orange-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-          >
-            Clear filters
-          </button>
-        </div>
+        <EmptyState
+          title="No restaurant offers match those filters."
+          actions={[
+            { label: "Clear filters", onClick: clearFilters },
+            { label: "See today's activities", href: "/" },
+          ]}
+        />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {filteredOffers.map((offer) => (
             <RestaurantOfferCard key={offer.id} offer={offer} />
           ))}

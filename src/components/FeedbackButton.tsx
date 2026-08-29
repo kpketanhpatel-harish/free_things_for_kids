@@ -93,7 +93,7 @@ export default function FeedbackButton() {
         }}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="inline-flex rounded-lg border border-gray-300 bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-3 sm:text-sm"
+        className="inline-flex min-h-11 rounded-lg border border-gray-300 bg-gray-100 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       >
         Feedback
       </button>

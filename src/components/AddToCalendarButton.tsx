@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import type { Activity } from "@/types";
+import { trackEvent } from "@/lib/analytics";
 import {
   buildGoogleCalendarUrl,
   buildOutlookCalendarUrl,
@@ -64,7 +65,9 @@ export default function AddToCalendarButton({
   }
 
   const sizeClasses =
-    size === "sm" ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm";
+    size === "sm"
+      ? "min-h-11 px-3 text-sm"
+      : "min-h-11 px-4 text-sm";
 
   const optionClasses =
     "flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 text-left text-sm font-medium text-gray-900 transition hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
@@ -73,7 +76,10 @@ export default function AddToCalendarButton({
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          trackEvent("add_to_calendar_clicked", { activity_id: activity.id });
+          setOpen(true);
+        }}
         aria-haspopup="dialog"
         aria-expanded={open}
         className={`inline-flex items-center rounded-lg border border-blue-200 bg-blue-50 font-medium text-blue-800 transition hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${sizeClasses}`}

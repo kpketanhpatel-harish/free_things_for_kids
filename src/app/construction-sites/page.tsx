@@ -7,9 +7,10 @@ import {
 } from "@/lib/constructionSites";
 
 export const metadata: Metadata = {
-  title: "Construction Sites",
+  title: "Construction watch sites",
   description:
     "Kid-friendly construction watch sites around Chicago, prioritizing Roscoe Village, Lakeview, and Lincoln Park.",
+  alternates: { canonical: "/construction-sites" },
 };
 
 export default async function ConstructionSitesPage() {
@@ -28,7 +29,7 @@ export default async function ConstructionSitesPage() {
 
         <div className="mb-8">
           <p className="font-medium text-amber-800">
-            The Free Kid List Chicago
+            The Free Kids List Chicago
           </p>
 
           <h1 className="mt-2 text-4xl font-bold text-gray-900">

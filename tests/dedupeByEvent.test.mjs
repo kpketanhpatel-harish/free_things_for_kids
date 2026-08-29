@@ -59,4 +59,26 @@ describe("dedupeActivitiesByEvent", () => {
     assert.notEqual(activityDedupeKey(merlo), activityDedupeKey(lincolnPark));
     assert.equal(dedupeActivitiesByEvent([merlo, lincolnPark]).length, 2);
   });
+
+  it("does not collapse same-titled story times at different times", () => {
+    const morning = {
+      id: "cpl:1",
+      title: "Story Time",
+      date: "2026-08-16",
+      venue: "Merlo",
+      start_time: "10:00",
+      status: "published",
+    };
+    const afternoon = {
+      id: "cpl:2",
+      title: "Story Time",
+      date: "2026-08-16",
+      venue: "Merlo",
+      start_time: "14:00",
+      status: "published",
+    };
+
+    assert.notEqual(activityDedupeKey(morning), activityDedupeKey(afternoon));
+    assert.equal(dedupeActivitiesByEvent([morning, afternoon]).length, 2);
+  });
 });
