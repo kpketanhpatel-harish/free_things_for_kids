@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import RestaurantOfferList from "@/components/RestaurantOfferList";
 import { getRestaurantOffers } from "@/lib/restaurantOffers";
-import { SITE_AREA } from "@/lib/site";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Kids Eat Free in Chicago",
-  description: `Kids-eat-free restaurant offers in ${SITE_AREA}. Confirm hours and restrictions with the restaurant.`,
+  description:
+    "Kids eat free tonight in Chicago—family-friendly restaurant deals by neighborhood, including Lakeview, Lincoln Park, and Roscoe Village. Confirm hours and restrictions with the restaurant.",
   alternates: { canonical: "/kids-eat-free" },
 };
 
@@ -22,12 +22,14 @@ export default async function KidsEatFreePage() {
             Kids Eat Free Tonight
           </h1>
           <p className="mt-2 max-w-2xl text-gray-600">
-            Free or discounted kids meals in {SITE_AREA}. Filter by day to
-            see what&apos;s on tonight.
+            Family-friendly restaurant deals across Chicago, with kids-eat-free
+            nights, early-dinner windows, and neighborhood happy hours. Start
+            with tonight, or browse by neighborhood.
           </p>
           <p className="mt-3 max-w-2xl text-sm text-gray-500">
             Restaurant promotions can change without notice. Please confirm an
-            offer directly with the restaurant before visiting.
+            offer directly with the restaurant before visiting. Sourced listings
+            are not independently confirmed unless marked confirmed.
           </p>
         </div>
 

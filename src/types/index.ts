@@ -39,6 +39,11 @@ export type RestaurantOffer = {
   address?: string;
   website?: string;
   sourceUrl?: string;
+  sourceName?: string;
+  notes?: string;
+  lastChecked?: string;
+  latitude?: number;
+  longitude?: number;
   createdAt?: string;
 };
 

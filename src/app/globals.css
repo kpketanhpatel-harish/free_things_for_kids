@@ -15,6 +15,11 @@ html {
   overflow-x: hidden;
 }
 
+.leaflet-container {
+  width: 100%;
+  max-width: 100%;
+}
+
 body {
   margin: 0;
   background: #f8fafc;

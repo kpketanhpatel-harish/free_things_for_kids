@@ -3,7 +3,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import FreeBadge from "@/components/FreeBadge";
 import VerificationBadge from "@/components/VerificationBadge";
-import { formatListedDate } from "@/lib/formatActivityDate";
+import { restaurantDirectionsUrl } from "@/lib/restaurantOfferDirections";
+import {
+  decodeRestaurantOfferId,
+  getRestaurantOfferHref,
+} from "@/lib/restaurantOfferPath";
+import {
+  ageHeadline,
+  formatOfferWhen,
+  formatSourceMonth,
+  looksLikeFreeKidsMeal,
+} from "@/lib/restaurantOfferSchedule";
 import { getRestaurantOfferById } from "@/lib/restaurantOffers";
 import { SITE_NAME } from "@/lib/site";
 
@@ -15,14 +25,14 @@ export async function generateMetadata({
   params,
 }: RestaurantOfferDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const offer = await getRestaurantOfferById(id);
+  const offer = await getRestaurantOfferById(decodeRestaurantOfferId(id));
   if (!offer) return { title: "Offer not found" };
 
   const description = `${offer.restaurantName} in ${offer.neighborhood}: ${offer.offerSummary}`;
   return {
     title: `Kids eat free at ${offer.restaurantName}`,
     description,
-    alternates: { canonical: `/kids-eat-free/${offer.id}` },
+    alternates: { canonical: getRestaurantOfferHref(offer) },
     openGraph: {
       title: `${offer.restaurantName} | ${SITE_NAME}`,
       description,
@@ -30,24 +40,25 @@ export async function generateMetadata({
   };
 }
 
+function trustLabel(confirmed: boolean, lastChecked?: string): string {
+  const sourced = formatSourceMonth(lastChecked);
+  if (confirmed) return sourced ? `Confirmed · ${sourced}` : "Confirmed";
+  if (sourced) return `Sourced ${sourced} · not independently confirmed`;
+  return "Unconfirmed — confirm with the restaurant";
+}
+
 export default async function RestaurantOfferDetailPage({
   params,
 }: RestaurantOfferDetailPageProps) {
   const { id } = await params;
-  const offer = await getRestaurantOfferById(id);
+  const offer = await getRestaurantOfferById(decodeRestaurantOfferId(id));
 
   if (!offer) {
     notFound();
   }
 
-  const listed = formatListedDate(offer.createdAt);
-  const verifyLabel = offer.confirmed
-    ? listed
-      ? `Confirmed · Listed ${listed}`
-      : "Confirmed"
-    : listed
-      ? `Last checked ${listed}`
-      : "Unconfirmed";
+  const directions = restaurantDirectionsUrl(offer);
+  const age = ageHeadline(offer);
 
   return (
     <main className="bg-gray-50">
@@ -64,15 +75,20 @@ export default async function RestaurantOfferDetailPage({
             <span className="rounded-full bg-orange-100 px-3 py-1 text-sm text-orange-800">
               {offer.neighborhood}
             </span>
-            <FreeBadge />
+            {looksLikeFreeKidsMeal(offer.offerSummary) ? <FreeBadge /> : null}
           </div>
 
           <h1 className="mt-4 text-2xl font-bold text-gray-900 md:text-3xl">
             {offer.restaurantName}
           </h1>
+          <p className="mt-2 text-base font-semibold text-gray-900">
+            {formatOfferWhen(offer)}
+          </p>
           <p className="mt-3 text-gray-700">{offer.offerSummary}</p>
           <div className="mt-3">
-            <VerificationBadge label={verifyLabel} />
+            <VerificationBadge
+              label={trustLabel(offer.confirmed, offer.lastChecked)}
+            />
           </div>
 
           <dl className="mt-6 space-y-3 text-gray-800">
@@ -88,20 +104,19 @@ export default async function RestaurantOfferDetailPage({
             </div>
             <div>
               <dt className="text-sm font-semibold text-gray-500">Offer days</dt>
-              <dd>{offer.eligibleDays.join(", ")}</dd>
+              <dd>{offer.eligibleDays.join(", ") || "See offer details"}</dd>
             </div>
             <div>
               <dt className="text-sm font-semibold text-gray-500">Offer time</dt>
               <dd>{offer.eligibleHours}</dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold text-gray-500">
-                Maximum child age
-              </dt>
+              <dt className="text-sm font-semibold text-gray-500">Kids age</dt>
               <dd>
-                {offer.maximumChildAge
-                  ? `${offer.maximumChildAge} and under`
-                  : "Not specified"}
+                {age ??
+                  (offer.maximumChildAge
+                    ? `${offer.maximumChildAge} and under`
+                    : "Not specified")}
               </dd>
             </div>
             <div>
@@ -115,10 +130,51 @@ export default async function RestaurantOfferDetailPage({
             <div>
               <dt className="text-sm font-semibold text-gray-500">Restrictions</dt>
               <dd>
-                {offer.dineInOnly ? "Dine-in only" : "Dine-in or takeaway"}
+                {offer.notes
+                  ? offer.notes
+                  : offer.dineInOnly
+                    ? "Dine-in only"
+                    : "Dine-in or takeaway"}
               </dd>
             </div>
           </dl>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {directions ? (
+              <a
+                href={directions}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center rounded-full bg-orange-700 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                Directions
+              </a>
+            ) : null}
+            {offer.website ? (
+              <a
+                href={offer.website}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center rounded-full border border-orange-200 bg-white px-4 text-sm font-medium text-orange-900 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                Restaurant website
+              </a>
+            ) : null}
+          </div>
+
+          {offer.sourceUrl ? (
+            <p className="mt-6 text-sm text-gray-500">
+              Source:{" "}
+              <a
+                href={offer.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-orange-800 underline-offset-2 hover:underline"
+              >
+                {offer.sourceName ?? "Original listing"}
+              </a>
+            </p>
+          ) : null}
 
           <p className="mt-8 rounded-lg bg-orange-50 p-4 text-sm text-gray-700">
             Restaurant promotions can change without notice. Please confirm the

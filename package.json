@@ -15,6 +15,7 @@
     "cleanup:duplicate-activities": "node scripts/cleanup-duplicate-activities.mjs",
     "import:activities": "node scripts/import-activities-sheet.mjs",
     "import:restaurant-offers": "node scripts/import-restaurant-offers-sheet.mjs",
+    "import:foam-kids-eat-free": "node scripts/import-foam-kids-eat-free.mjs",
     "import:construction-sites": "node scripts/import-construction-sites-sheet.mjs"
   },
   "dependencies": {
